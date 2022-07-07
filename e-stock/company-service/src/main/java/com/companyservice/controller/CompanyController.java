@@ -7,6 +7,7 @@ import com.companyservice.service.CompanyService;
 import com.companyservice.ui.CompanyResponseModel;
 import com.companyservice.ui.StockResponseModel;
 import com.companyservice.exception.CompanyException;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,8 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/api/v1.0/market/company/")
+@Log4j2
+@CrossOrigin(origins="*")
 public class CompanyController {
 
     /**
@@ -35,8 +38,8 @@ public class CompanyController {
 
     /**
      * for constructor di of variables
-     * @param companyService
-     * @param commonProxy
+     * @param companyService include company operation's
+     * @param commonProxy for feign call -> one service to other
      */
     public CompanyController(CompanyService companyService,CommonProxy commonProxy){
         this.companyService =companyService;
@@ -45,32 +48,30 @@ public class CompanyController {
 
     /**
      * register new company
-     * @param companyDto
+     * @param companyDto-> user request object
      * @return company response
      */
     @PostMapping("register")
-    public ResponseEntity<?> registerCompany(@RequestBody final CompanyDto companyDto) {
-        if(companyDto.getCompanyTurnover() <= 100000000){
-            throw  new CompanyException("Company Turnover is low");
-        }
-            Company response =  companyService.registerCompany(companyDto);
-
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-
+    public ResponseEntity<?> registerCompany(@RequestBody CompanyDto companyDto) {
+        log.info("register new company");
+        CompanyResponseModel response =  companyService.registerCompany(companyDto);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     /**
      * fetch company detail
-     * @param companyCode
+     * @param companyCode -> unique code of company
      * @return return company response object
      */
     @GetMapping("info/{companyCode}")
     public ResponseEntity<?> getCompanyDetail(@PathVariable final String companyCode) {
+        log.info("get company detail by companyCode:{}",companyCode);
         final CompanyResponseModel response =  companyService.getCompanyDetail(companyCode,false);
 
         if(response != null){
             final List<StockResponseModel> stocks = commonProxy.getCompanyStock(companyCode);
             if(!stocks.isEmpty()){
+
                 response.setStock(stocks);
 
             }
@@ -85,21 +86,15 @@ public class CompanyController {
      */
     @GetMapping("get-all")
     public ResponseEntity<List<CompanyResponseModel>> getAll() {
+        log.info("get all companies");
         final List<CompanyResponseModel> response =  companyService.getAll();
         if(response != null){
             final List<String> companyCodes = response.stream()
-                    .map(company-> company.getCompanyCode())
+                    .map(CompanyResponseModel::getCompanyCode)
                     .collect(Collectors.toList());
 
             final List<StockResponseModel> stocks = commonProxy.getCompanyStock(companyCodes);
-
-            for(CompanyResponseModel companyResponseModel : response){
-                final List<StockResponseModel> stockResponseModels = stocks.stream()
-                        .filter(stock->
-                            stock.getCompanyCode().equals(companyResponseModel.getCompanyCode())
-                        ).collect(Collectors.toList());
-                companyResponseModel.setStock(stockResponseModels);
-            }
+            setCompanyStock(response,stocks);
         }
         return ResponseEntity.status(HttpStatus.OK).body(response);
 
@@ -107,16 +102,28 @@ public class CompanyController {
 
     /**
      * delete company with the help of company code
-     * @param companyCode
+     * @param companyCode -> unique code of company
      * @return response message
      */
     @DeleteMapping("delete/{companyCode}")
     public ResponseEntity<?> deleteCompany(@PathVariable final String companyCode) {
+        log.info("delete company by companycode :{}",companyCode);
         commonProxy.deleteCompanyStock(companyCode);
 
         final String response =  companyService.deleteCompany(companyCode);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
 
+    }
+
+    private void setCompanyStock(List<CompanyResponseModel> companies,List<StockResponseModel> stocks){
+
+        for(CompanyResponseModel companyResponseModel : companies){
+            final List<StockResponseModel> stockResponseModels = stocks.stream()
+                    .filter(stock->
+                            stock.getCompanyCode().equals(companyResponseModel.getCompanyCode())
+                    ).collect(Collectors.toList());
+            companyResponseModel.setStock(stockResponseModels);
+        }
     }
 }

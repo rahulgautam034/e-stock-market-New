@@ -15,7 +15,6 @@ public class ModelMapperConfig {
         /**
          * bean of model mapper
          */
-
         @Bean
         public ModelMapper modelMapper() {
             return new ModelMapper();

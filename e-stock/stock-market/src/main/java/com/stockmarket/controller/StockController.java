@@ -24,42 +24,30 @@ import java.util.List;
 public class StockController {
 
     private final StockService stockService;
-    private final CommonProxy commonProxy;
-
-    public StockController(StockService stockService,CommonProxy commonProxy) {
+    public StockController(StockService stockService) {
         this.stockService = stockService;
-        this.commonProxy = commonProxy;
     }
 
 
     /***
      * add stock of register company
-     * @param stockDto
+     * @param stockDto user request object
      * @return succes-> saved stock/ error-> return error message
      */
     @PostMapping("add")
     //@CircuitBreaker(name = "stockWSCircuitBreaker", fallbackMethod = "stockWSFallBack")
     private ResponseEntity<?> addNewStock(@RequestBody StockDto stockDto) {
         log.info("addNewStock called");
-        final CompanyResponseModel companyDetail = commonProxy.getCompanyDetail(stockDto.getCompanyCode());
-        if(companyDetail != null && companyDetail.getCompanyCode() != null){
-            stockDto.setCompanyName(companyDetail.getCompanyName());
-            Stock response =  stockService.createStock(stockDto);
-
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        }else {
-            log.error("Company not Register in our database.Please First register company then add stock price");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Company not Register in our database.Please First register company then add stock price");
-        }
-
+        final Stock response =  stockService.createStock(stockDto);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     /**
      * fetch company detail based on company code
-     * @param companyCode
+     * @param companyCode unique code of company
      * @return list with latest stock price
      */
-    @GetMapping("get-company-stock/{companyCode}")
+    @GetMapping("get-company-latest-stock/{companyCode}")
     private ResponseEntity<List<StockResponseModel>> getCompanyStock(@PathVariable String companyCode){
         log.info("getCompanyStock using company code");
 
@@ -85,7 +73,7 @@ public class StockController {
 
     /**
      * fetch companies stock based on company code
-     * @param companyCodes
+     * @param companyCodes unique code of company
      * @return list of companies stock
      */
 
@@ -101,23 +89,21 @@ public class StockController {
 
     /**
      * fetch records as based on variables
-     * @param companyCode
-     * @param startDate
-     * @param endDate
+     * @param companyCode unique code of company
+     *  @param startDate -> search startDate
+     *  @param endDate-> search endDate
      * @return list of stock
      */
     @GetMapping("get")
     private ResponseEntity<List<Stock>> getAll(@RequestParam String companyCode, @RequestParam String startDate, @RequestParam String endDate){
         log.info("getCompanyStock called-> fetch records as based on variables");
-
         List<Stock> stocks = stockService.getAll(companyCode, startDate,endDate);
-
         return ResponseEntity.status(HttpStatus.OK).body(stocks);
     }
 
     /**
      * delete the company stock
-     * @param companyCode
+     * @param companyCode unique code of company
      * @return message
      */
     @DeleteMapping("delete/{companyCode}")
@@ -131,7 +117,7 @@ public class StockController {
 
     /**
      * show error response if COMPANY-WS is down
-     * @param e
+     * @param e exception
      * @return fallback message
      */
     public ResponseEntity<?> stockWSFallBack(final Exception e) {

@@ -16,7 +16,7 @@ import java.util.List;
 public interface CommonProxy {
     /**
      * delete all stock of company
-     * @param companyCode
+     * @param companyCode company unique code
      * @return success message
      */
     @DeleteMapping("/api/v1.0/market/stock/delete/{companyCode}")
@@ -24,15 +24,15 @@ public interface CommonProxy {
 
     /**
      * get all stock of current company
-     * @param companyCode
+     * @param companyCode company unique code
      * @return list of stock of company
      */
-    @GetMapping("/api/v1.0/market/stock/get-company-stock/{companyCode}")
+    @GetMapping("/api/v1.0/market/stock/get-company-latest-stock/{companyCode}")
     List<StockResponseModel> getCompanyStock(@PathVariable String companyCode);
 
     /**
      * fetch latest stock of company
-     * @param companyCodes
+     * @param companyCodes unique company code
      * @return latest stock in list of company
      */
     @GetMapping("/api/v1.0/market/stock/get-all-stock/{companyCodes}")
