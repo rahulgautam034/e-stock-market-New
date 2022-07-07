@@ -42,12 +42,15 @@ public class StockServiceImpl implements StockService {
      * @param stockDto-> user request object
      * @return saved stock
      */
-    public Stock createStock(StockDto stockDto){
+    public Stock createStock(StockDto stockDto) {
         log.info("createStock method called");
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        final CompanyResponseModel companyDetail = commonProxy.getCompanyDetail(stockDto.getCompanyCode());
-        if(companyDetail.getCompanyCode() == null){
-            throw new StockException("Company not Register in our database.Please First register company and then add stock price");
+        CompanyResponseModel companyDetail;
+
+        try{
+            companyDetail = commonProxy.getCompanyDetail(stockDto.getCompanyCode());
+        }catch (Exception e){
+            throw new StockException("Company not Register in our database.Please First register company and then add new stock price");
         }
 
         Stock stock = modelMapper.map(stockDto,Stock.class);
@@ -82,11 +85,11 @@ public class StockServiceImpl implements StockService {
                 .stream().map(Stock::getId).collect(Collectors.toList());
 
         if(stockIds.isEmpty()){
-            log.info("no any stock available");
-            throw  new StockException("no any stock available ");
+            return "No stock Available of this company";
         }
+
         stockRepository.deleteAllById(stockIds);
-        return "stock deleted successfully";
+        return "Stock deleted related to this company";
     }
 
     /**
