@@ -14,8 +14,6 @@ import lombok.Setter;
 @Setter
 public class CompanyException extends  RuntimeException {
 
-    private static final long serialVersionUID = 9053315727906717006L;
-
     private String message;
 
 }

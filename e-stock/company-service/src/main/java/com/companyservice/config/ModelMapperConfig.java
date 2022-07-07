@@ -1,6 +1,5 @@
 package com.companyservice.config;
 
-import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,14 +9,13 @@ import org.springframework.context.annotation.Configuration;
  *
  */
 @Configuration
-@NoArgsConstructor
 public class ModelMapperConfig {
         /**
          * bean of model mapper
          */
-
         @Bean
         public ModelMapper modelMapper() {
-            return new ModelMapper();
+            ModelMapper modelMapper = new ModelMapper();
+            return modelMapper;
         }
 }

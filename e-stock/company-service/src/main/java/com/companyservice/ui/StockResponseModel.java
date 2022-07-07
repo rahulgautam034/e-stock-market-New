@@ -11,11 +11,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
-
 public class StockResponseModel {
 
-    private Long id;
+    private String id;
 
     private double stockPrice;
 
@@ -25,4 +23,23 @@ public class StockResponseModel {
 
     private String createdDate;
 
+    public void setId(Long id) {
+        this.id = id.toString();
+    }
+
+    public void setStockPrice(double stockPrice) {
+        this.stockPrice = stockPrice;
+    }
+
+    public void setCompanyCode(String companyCode) {
+        this.companyCode = companyCode;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public void setCreatedDate(String createdDate) {
+        this.createdDate = createdDate;
+    }
 }

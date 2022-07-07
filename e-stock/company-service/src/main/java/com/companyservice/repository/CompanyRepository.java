@@ -1,14 +1,14 @@
 package com.companyservice.repository;
 
 import com.companyservice.entity.Company;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
- * company repository for db operations
+ * company repository for db operations with mongoDB
  */
-public interface CompanyRepository extends JpaRepository<Company,Long> {
+public interface CompanyRepository extends MongoRepository<Company,Long> {
     /**
-     * ge company detail by company code
+     * get company detail by company code
      * @param companyCode
      * @return company detail
      */

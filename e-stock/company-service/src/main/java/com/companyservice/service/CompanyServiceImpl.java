@@ -39,14 +39,19 @@ public class CompanyServiceImpl implements CompanyService {
      * @return company response
      */
     @Override
-    public Company registerCompany(final CompanyDto companyDto) {
+    public CompanyResponseModel registerCompany(CompanyDto companyDto) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        final CompanyResponseModel company = getCompanyDetail(companyDto.getCompanyCode(),true);
+        if(companyDto.getCompanyTurnover() <= 100_000_000){
+            throw  new CompanyException("Company Turnover is low");
+        }
 
-        if(company != null && company.getCompanyCode() != null){
+        CompanyResponseModel company = getCompanyDetail(companyDto.getCompanyCode(),true);
+
+        if(company != null){
             throw new CompanyException("Company already Register.");
         }
-        return companyRepository.save(modelMapper.map(companyDto,Company.class));
+        Company companyResponse =  companyRepository.save(modelMapper.map(companyDto,Company.class));
+        return modelMapper.map(companyResponse,CompanyResponseModel.class);
 
     }
 
@@ -63,7 +68,7 @@ public class CompanyServiceImpl implements CompanyService {
         CompanyResponseModel companyResponseModel = null;
 
         if(company == null && !isLocal){
-            throw new CompanyException("Company not found.");
+            throw new CompanyException("Company not Register in our database.");
         }
         if(company != null){
              companyResponseModel = modelMapper.map(company,CompanyResponseModel.class);

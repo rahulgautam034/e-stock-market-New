@@ -3,28 +3,27 @@ package com.companyservice.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @Getter
 @Setter
-@Entity
 @NoArgsConstructor
+@Document(collection = "company")
 public class Company {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Id()
+    private String id;
 
     private String companyName;
 
     private String companyCeo;
 
-    private String companyTurnover;
+    private Long companyTurnover;
 
     private String companyWebsite;
 
-    @Column(unique = true)
     private String companyCode;
 
 }

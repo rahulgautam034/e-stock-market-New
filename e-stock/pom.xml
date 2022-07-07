@@ -55,6 +55,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -73,6 +74,7 @@
 			api-gateway
 		</module>
 		<module>stock-market</module>
+		<module>user-service</module>
 	</modules>
 
 	<dependencyManagement>

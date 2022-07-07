@@ -27,7 +27,7 @@ public class CompanyExceptionHandler {
         errorResponseModel.setMessage(exception.getMessage());
         errorResponseModel.setErrorReportingTime(LocalDateTime.now());
 
-        return ResponseEntity.status(HttpStatus.OK).body(errorResponseModel);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponseModel);
 
     }
 }

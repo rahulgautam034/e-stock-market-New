@@ -15,7 +15,7 @@ public interface CompanyService {
      * @param companyDto
      * @return company response
      */
-    Company registerCompany(CompanyDto companyDto);
+    CompanyResponseModel registerCompany(CompanyDto companyDto);
 
     /**
      * company detail of one company
