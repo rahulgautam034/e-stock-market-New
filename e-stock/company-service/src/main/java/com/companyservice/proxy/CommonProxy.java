@@ -1,10 +1,9 @@
 package com.companyservice.proxy;
 
+import com.companyservice.dto.StockDto;
 import com.companyservice.ui.StockResponseModel;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -12,14 +11,15 @@ import java.util.List;
  * proxy to use api of STOCK-WS using feign client
  *
  */
-@FeignClient(value = "STOCK-WS")
+@FeignClient(value = "STOCK-WS", path = "/api/v1.0/market/stock/")
 public interface CommonProxy {
+
     /**
      * delete all stock of company
      * @param companyCode company unique code
      * @return success message
      */
-    @DeleteMapping("/api/v1.0/market/stock/delete/{companyCode}")
+    @DeleteMapping("delete/{companyCode}")
     String deleteCompanyStock(@PathVariable String companyCode);
 
     /**
@@ -27,7 +27,7 @@ public interface CommonProxy {
      * @param companyCode company unique code
      * @return list of stock of company
      */
-    @GetMapping("/api/v1.0/market/stock/get-company-latest-stock/{companyCode}")
+    @GetMapping("get-company-latest-stock/{companyCode}")
     List<StockResponseModel> getCompanyStock(@PathVariable String companyCode);
 
     /**
@@ -35,6 +35,7 @@ public interface CommonProxy {
      * @param companyCodes unique company code
      * @return latest stock in list of company
      */
-    @GetMapping("/api/v1.0/market/stock/get-all-stock/{companyCodes}")
+    @GetMapping("get-all-stock/{companyCodes}")
     List<StockResponseModel> getCompanyStock(@PathVariable List<String> companyCodes);
+
 }

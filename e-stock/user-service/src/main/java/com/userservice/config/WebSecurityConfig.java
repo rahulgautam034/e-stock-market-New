@@ -27,14 +27,15 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-	private UserDetailsService jwtUserDetailsService;
+	private final UserDetailsService jwtUserDetailsService;
 
-	private JwtRequestFilter jwtRequestFilter;
+	private final JwtRequestFilter jwtRequestFilter;
 
 	public WebSecurityConfig(JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
 			UserDetailsService jwtUserDetailsService, JwtRequestFilter jwtRequestFilter) {
+		super();
 		this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
 		this.jwtUserDetailsService = jwtUserDetailsService;
 		this.jwtRequestFilter = jwtRequestFilter;
@@ -44,8 +45,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 * configure AuthenticationManager so that it knows from where to load user for
 	 * matching credentials Use BCryptPasswordEncoder
 	 * 
-	 * @param auth
-	 * @throws Exception
+	 * @param auth -> authentication
+	 * @throws Exception -> throw exception if encoding failed
 	 */
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {

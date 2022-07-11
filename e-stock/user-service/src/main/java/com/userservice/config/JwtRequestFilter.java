@@ -27,11 +27,12 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-	private JWTUserDetailsService jwtUserDetailsService;
+	private final JWTUserDetailsService jwtUserDetailsService;
 
-	private JwtTokenUtil jwtTokenUtil;
+	private final JwtTokenUtil jwtTokenUtil;
 
 	public JwtRequestFilter(JWTUserDetailsService jwtUserDetailsService, JwtTokenUtil jwtTokenUtil) {
+		super();
 		this.jwtUserDetailsService = jwtUserDetailsService;
 		this.jwtTokenUtil = jwtTokenUtil;
 	}
@@ -66,13 +67,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 		// Once we get the token validate it.
 		if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-			UserDetails userDetails = this.jwtUserDetailsService.loadUserByUsername(username);
+			final UserDetails userDetails = this.jwtUserDetailsService.loadUserByUsername(username);
 
 			// if token is valid configure Spring Security to manually set
 			// authentication
 			if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
 
-				UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+				final UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
 						userDetails, null, userDetails.getAuthorities());
 				usernamePasswordAuthenticationToken
 						.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

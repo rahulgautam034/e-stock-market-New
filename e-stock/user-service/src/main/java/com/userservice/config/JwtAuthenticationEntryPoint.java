@@ -6,12 +6,13 @@ import java.io.Serializable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.log4j.Log4j2;
-
+@NoArgsConstructor
 @Component
 @Log4j2
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Serializable {

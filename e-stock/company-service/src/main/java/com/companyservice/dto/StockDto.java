@@ -1,4 +1,4 @@
-package com.stockmarket.dto;
+package com.companyservice.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -42,20 +42,15 @@ public class StockServiceImpl implements StockService {
      * @param stockDto-> user request object
      * @return saved stock
      */
+    @Override
     public Stock createStock(StockDto stockDto) {
         log.info("createStock method called");
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        CompanyResponseModel companyDetail;
+        CompanyResponseModel companyresponse = commonProxy.getCompanyDetail(stockDto.getCompanyCode());
 
-        try{
-            companyDetail = commonProxy.getCompanyDetail(stockDto.getCompanyCode());
-        }catch (Exception e){
-            throw new StockException("Company not Register in our database.Please First register company and then add new stock price");
-        }
-
-        Stock stock = modelMapper.map(stockDto,Stock.class);
+        final Stock stock = modelMapper.map(stockDto,Stock.class);
         stock.setCreatedDate(getCurrentDate());
-        stock.setCompanyName(companyDetail.getCompanyName());
+        stock.setCompanyName(companyresponse.getCompanyName());
         return stockRepository.save(stock);
     }
 
@@ -81,7 +76,7 @@ public class StockServiceImpl implements StockService {
     public String deleteAllCompanyStock(String companyCode) {
         log.info("deleteAllCompanyStock called to delete all stock of companyCode {}",companyCode);
 
-        List<Long> stockIds = stockRepository.findAllByCompanyCode(companyCode)
+        final List<Long> stockIds = stockRepository.findAllByCompanyCode(companyCode)
                 .stream().map(Stock::getId).collect(Collectors.toList());
 
         if(stockIds.isEmpty()){
@@ -109,7 +104,7 @@ public class StockServiceImpl implements StockService {
         }
 
         List<StockResponseModel> stockResponseModelList = new ArrayList<>();
-        if(stocks.size() > 0){
+        if(!stocks.isEmpty()){
             stockResponseModelList = stocks.stream()
                     .map(stock -> modelMapper.map(stock,StockResponseModel.class)).collect(Collectors.toList());
         }
@@ -121,11 +116,30 @@ public class StockServiceImpl implements StockService {
      * fetch all stock
      * @return list of all stock
      */
+    @Override
     public List<StockResponseModel> getAllStock() {
         log.info("getAllStock of whole companies");
-        List<Stock> stocks = stockRepository.findAll();
+        final List<Stock> stocks = stockRepository.findAll();
         List<StockResponseModel> stockResponseModelList = new ArrayList<>();
-        if(stocks.size() > 0){
+        if(!stocks.isEmpty()){
+            stockResponseModelList = mapObject(stocks);
+        }
+
+        return stockResponseModelList;
+    }
+
+    /**
+     * fetch all stock of company by company code
+     * @param companyCode-> unique code of company
+     * @return list of stock of companies
+     */
+    @Override
+    public List<StockResponseModel> getAllStock(String companyCode) {
+        log.info("getAllStock of companies by compancode");
+        final List<Stock> stocks = stockRepository.findAllByCompanyCode(companyCode);
+
+        List<StockResponseModel> stockResponseModelList = new ArrayList<>();
+        if(!stocks.isEmpty()){
             stockResponseModelList = mapObject(stocks);
         }
 
@@ -140,10 +154,10 @@ public class StockServiceImpl implements StockService {
     @Override
     public List<StockResponseModel> getAllStock(List<String> companyCodes) {
         log.info("getAllStock of companies by compancode");
-        List<Stock> stocks = stockRepository.findAllByCompanyCode(companyCodes);
+        final List<Stock> stocks = stockRepository.findAllByCompanyCode(companyCodes);
 
         List<StockResponseModel> stockResponseModelList = new ArrayList<>();
-        if(stocks.size() > 0){
+        if(!stocks.isEmpty()){
             stockResponseModelList = mapObject(stocks);
         }
 
@@ -162,7 +176,7 @@ public class StockServiceImpl implements StockService {
     }
 
     private String getCurrentDate(){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(StockServiceImpl.DATE_TIME_FORMAT);
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(StockServiceImpl.DATE_TIME_FORMAT);
         return formatter.format(LocalDateTime.now());
     }
 

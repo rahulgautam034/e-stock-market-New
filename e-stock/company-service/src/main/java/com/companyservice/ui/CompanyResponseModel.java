@@ -1,6 +1,7 @@
 package com.companyservice.ui;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.List;
 /**
  * company response for user
  */
+@NoArgsConstructor
 @Getter
 @Setter
 public class CompanyResponseModel {

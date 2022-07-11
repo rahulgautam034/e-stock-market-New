@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -14,7 +15,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.log4j.Log4j2;
-
+@NoArgsConstructor
 @Component
 @Log4j2
 public class JwtTokenUtil implements Serializable {
@@ -29,8 +30,8 @@ public class JwtTokenUtil implements Serializable {
 	/**
 	 * retrieve username from jwt token
 	 * 
-	 * @param token
-	 * @return
+	 * @param token -> user token
+	 * @return -> claim
 	 */
 	public String getUsernameFromToken(String token) {
 		log.info("getUsernameFromToken");
@@ -40,8 +41,8 @@ public class JwtTokenUtil implements Serializable {
 	/**
 	 * retrieve expiration date from jwt token
 	 * 
-	 * @param token
-	 * @return
+	 * @param token -> user token
+	 * @return -> expiy date of token
 	 */
 	public Date getExpirationDateFromToken(String token) {
 		log.info("getExpirationDateFromToken called");
@@ -51,8 +52,8 @@ public class JwtTokenUtil implements Serializable {
 	/**
 	 * retrieve get Claim from jwt token
 	 * 
-	 * @param token
-	 * @return
+	 * @param token -> user token
+	 * @return -> claim
 	 */
 	public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
 		log.info("getClaimFromToken called");
@@ -63,8 +64,8 @@ public class JwtTokenUtil implements Serializable {
 	/**
 	 * for retrieveing any information from token we will need the secret key
 	 * 
-	 * @param token
-	 * @return
+	 * @param token -> user token
+	 * @return -> all claims
 	 */
 	private Claims getAllClaimsFromToken(String token) {
 		log.info("getAllClaimsFromToken called");
@@ -74,8 +75,8 @@ public class JwtTokenUtil implements Serializable {
 	/**
 	 * check if the token has expired
 	 * 
-	 * @param token
-	 * @return
+	 * @param token ->user token
+	 * @return -> return true if tokenexpired otherwise false
 	 */
 	private Boolean isTokenExpired(String token) {
 		log.info("isTokenExpired called");
@@ -86,12 +87,12 @@ public class JwtTokenUtil implements Serializable {
 	/**
 	 * generate token for user
 	 * 
-	 * @param userDetails
-	 * @return
+	 * @param userDetails -> user username & password
+	 * @return -> generated token
 	 */
 	public String generateToken(UserDetails userDetails) {
 		log.info("generateToken called");
-		Map<String, Object> claims = new HashMap<>();
+		final Map<String, Object> claims = new HashMap<>();
 		return doGenerateToken(claims, userDetails.getUsername());
 	}
 
@@ -102,9 +103,9 @@ public class JwtTokenUtil implements Serializable {
 	 * Serialization(https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-41#section-3.1)
 	 * compaction of the JWT to a URL-safe string
 	 * 
-	 * @param claims
-	 * @param subject
-	 * @return
+	 * @param claims -> token claims
+	 * @param subject -> token subject
+	 * @return -> generated token
 	 */
 	private String doGenerateToken(Map<String, Object> claims, String subject) {
 		log.info("doGenerateToken called");
@@ -116,9 +117,9 @@ public class JwtTokenUtil implements Serializable {
 	/**
 	 * validate token
 	 * 
-	 * @param token
-	 * @param userDetails
-	 * @return
+	 * @param token -> user token
+	 * @param userDetails -> user username/password
+	 * @return -> is token valid or not
 	 */
 	public Boolean validateToken(String token, UserDetails userDetails) {
 		log.info("validateToken called");

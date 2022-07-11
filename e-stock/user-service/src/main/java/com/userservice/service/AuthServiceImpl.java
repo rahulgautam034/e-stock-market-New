@@ -26,10 +26,10 @@ public class AuthServiceImpl implements AuthService {
 	 */
 	@Override
 	public AuthEntity validateUser(AuthDTO authDTO) {
-		Optional<AuthEntity> resp = userRepository.findByUserName(authDTO.getUserName());
+		final Optional<AuthEntity> resp = userRepository.findByUserName(authDTO.getUserName());
 
 		if (resp.isPresent()) {
-			AuthEntity user = resp.get();
+			final AuthEntity user = resp.get();
 			if (user.getPassword().equals(authDTO.getPassword())) {
 				return user;
 			} else {

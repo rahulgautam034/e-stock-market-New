@@ -1,14 +1,18 @@
 package com.companyservice.service;
 
 import com.companyservice.dto.CompanyDto;
+import com.companyservice.dto.StockDto;
 import com.companyservice.entity.Company;
+import com.companyservice.proxy.CommonProxy;
 import com.companyservice.repository.CompanyRepository;
 import com.companyservice.ui.CompanyResponseModel;
 import com.companyservice.exception.CompanyException;
+import com.companyservice.ui.StockResponseModel;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,30 +39,31 @@ public class CompanyServiceImpl implements CompanyService {
 
     /**
      * register new company
-     * @param companyDto
+     * @param companyDto->request object
      * @return company response
      */
     @Override
     public CompanyResponseModel registerCompany(CompanyDto companyDto) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        CompanyResponseModel companyResponseModel = null;
         if(companyDto.getCompanyTurnover() <= 100_000_000){
-            throw  new CompanyException("Company Turnover is low");
+            throw new CompanyException("Company Turnover is low");
         }
 
-        CompanyResponseModel company = getCompanyDetail(companyDto.getCompanyCode(),true);
+        final CompanyResponseModel company = getCompanyDetail(companyDto.getCompanyCode(),true);
 
         if(company != null){
             throw new CompanyException("Company already Register.");
         }
-        Company companyResponse =  companyRepository.save(modelMapper.map(companyDto,Company.class));
+        final Company companyResponse =  companyRepository.save(modelMapper.map(companyDto,Company.class));
         return modelMapper.map(companyResponse,CompanyResponseModel.class);
 
     }
 
     /**
      * company detail of one company
-     * @param companyCode
-     * @param isLocal
+     * @param companyCode->unique code of every company
+     * @param isLocal -> check whether is local method call
      * @return company response object
      */
     @Override
@@ -78,12 +83,12 @@ public class CompanyServiceImpl implements CompanyService {
 
     /**
      * delete a company with the help of company code
-     * @param companyCode
+     * @param companyCode->unique code of every company
      * @return message
      */
     @Override
     public String deleteCompany(final String companyCode) {
-        Company company = companyRepository.getByCompanyCode(companyCode);
+        final Company company = companyRepository.getByCompanyCode(companyCode);
 
         if(company == null){
             throw new CompanyException("Company not found of this company code");
@@ -106,4 +111,5 @@ public class CompanyServiceImpl implements CompanyService {
                 .map(company -> modelMapper.map(company,CompanyResponseModel.class)).collect(Collectors.toList());
 
     }
+
 }

@@ -2,9 +2,8 @@ package com.stockmarket.controller;
 
 import com.stockmarket.dto.StockDto;
 import com.stockmarket.entity.Stock;
-import com.stockmarket.proxy.CommonProxy;
+import com.stockmarket.exception.StockException;
 import com.stockmarket.service.StockService;
-import com.stockmarket.ui.CompanyResponseModel;
 import com.stockmarket.ui.StockResponseModel;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.extern.log4j.Log4j2;
@@ -35,8 +34,8 @@ public class StockController {
      * @return succes-> saved stock/ error-> return error message
      */
     @PostMapping("add")
-    //@CircuitBreaker(name = "stockWSCircuitBreaker", fallbackMethod = "stockWSFallBack")
-    private ResponseEntity<?> addNewStock(@RequestBody StockDto stockDto) {
+    @CircuitBreaker(name = "companyWSCircuitBreaker", fallbackMethod = "companyWSFallBack")
+    public ResponseEntity<?> addNewStock(@RequestBody StockDto stockDto) {
         log.info("addNewStock called");
         final Stock response =  stockService.createStock(stockDto);
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -47,11 +46,29 @@ public class StockController {
      * @param companyCode unique code of company
      * @return list with latest stock price
      */
-    @GetMapping("get-company-latest-stock/{companyCode}")
-    private ResponseEntity<List<StockResponseModel>> getCompanyStock(@PathVariable String companyCode){
+    @CircuitBreaker(name = "companyWSCircuitBreaker", fallbackMethod = "companyWSFallBack")
+    @GetMapping("get-all-company-stock/{companyCode}")
+    public ResponseEntity<List<StockResponseModel>> getAllStockStockOfCompany(@PathVariable String companyCode){
         log.info("getCompanyStock using company code");
 
-        List<StockResponseModel> stock = stockService.getCompanyStock(companyCode);
+        final List<StockResponseModel> stock = stockService.getAllStock(companyCode);
+
+        return  ResponseEntity.status(HttpStatus.OK).body(stock);
+
+    }
+
+    /**
+     * fetch latest stock based on company code
+     * @param companyCode unique code of company
+     * @return list with latest stock price
+     */
+
+    @CircuitBreaker(name = "companyWSCircuitBreaker", fallbackMethod = "companyWSFallBack")
+    @GetMapping("get-company-latest-stock/{companyCode}")
+    public ResponseEntity<List<StockResponseModel>> getCompanyStock(@PathVariable String companyCode){
+        log.info("getCompanyStock using company code");
+
+        final List<StockResponseModel> stock = stockService.getCompanyStock(companyCode);
 
         return  ResponseEntity.status(HttpStatus.OK).body(stock);
 
@@ -61,11 +78,12 @@ public class StockController {
      * fetch all companies stock
      * @return list of stock
      */
+    @CircuitBreaker(name = "companyWSCircuitBreaker", fallbackMethod = "companyWSFallBack")
     @GetMapping("get-all-stock")
-    private ResponseEntity<List<StockResponseModel>> getCompanyStock(){
+    public ResponseEntity<List<StockResponseModel>> getCompanyStock(){
         log.info("getCompanyStock called-> get all stock");
 
-        List<StockResponseModel> stock = stockService.getAllStock();
+        final List<StockResponseModel> stock = stockService.getAllStock();
 
         return  ResponseEntity.status(HttpStatus.OK).body(stock);
 
@@ -76,12 +94,12 @@ public class StockController {
      * @param companyCodes unique code of company
      * @return list of companies stock
      */
-
+    @CircuitBreaker(name = "companyWSCircuitBreaker", fallbackMethod = "companyWSFallBack")
     @GetMapping("get-all-stock/{companyCodes}")
-    private ResponseEntity<List<StockResponseModel>> getCompanyStock(@PathVariable List<String> companyCodes){
+    public ResponseEntity<List<StockResponseModel>> getCompanyStock(@PathVariable List<String> companyCodes){
         log.info("getCompanyStock called-> get all stock by companyCodes");
 
-        List<StockResponseModel> stock = stockService.getAllStock(companyCodes);
+        final List<StockResponseModel> stock = stockService.getAllStock(companyCodes);
 
         return  ResponseEntity.status(HttpStatus.OK).body(stock);
 
@@ -94,10 +112,11 @@ public class StockController {
      *  @param endDate-> search endDate
      * @return list of stock
      */
+    @CircuitBreaker(name = "companyWSCircuitBreaker", fallbackMethod = "companyWSFallBack")
     @GetMapping("get")
-    private ResponseEntity<List<Stock>> getAll(@RequestParam String companyCode, @RequestParam String startDate, @RequestParam String endDate){
+    public ResponseEntity<List<Stock>> getAll(@RequestParam String companyCode, @RequestParam String startDate, @RequestParam String endDate){
         log.info("getCompanyStock called-> fetch records as based on variables");
-        List<Stock> stocks = stockService.getAll(companyCode, startDate,endDate);
+        final List<Stock> stocks = stockService.getAll(companyCode, startDate,endDate);
         return ResponseEntity.status(HttpStatus.OK).body(stocks);
     }
 
@@ -106,11 +125,12 @@ public class StockController {
      * @param companyCode unique code of company
      * @return message
      */
+    @CircuitBreaker(name = "companyWSCircuitBreaker", fallbackMethod = "companyWSFallBack")
     @DeleteMapping("delete/{companyCode}")
-    private ResponseEntity<String> deleteCompanyStock(@PathVariable String companyCode){
+    public ResponseEntity<String> deleteCompanyStock(@PathVariable String companyCode){
         log.info("deleteCompanyStock called");
 
-        String response = stockService.deleteAllCompanyStock(companyCode);
+        final String response = stockService.deleteAllCompanyStock(companyCode);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -120,9 +140,11 @@ public class StockController {
      * @param e exception
      * @return fallback message
      */
-    public ResponseEntity<?> stockWSFallBack(final Exception e) {
+    private ResponseEntity<?> companyWSFallBack(final Exception e) {
         log.info("companyWSFallBack called");
-        return ResponseEntity.ok("within myTestFallBack method. COMPANY-WS is down" + e.toString());
+        String message = e.getMessage() != null ? e.getMessage() : "within stockWSFallBack method. COMPANY-WS is down";
+
+        throw new StockException(message);
     }
 
 

@@ -1,6 +1,7 @@
 package com.userservice.config;
 
 import com.google.common.collect.Lists;
+import lombok.NoArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.PathSelectors;
@@ -18,6 +19,7 @@ import java.util.List;
 /**
  * swagger-ui implementation
  */
+@NoArgsConstructor
 @Configuration
 public class SwaggerConfig {
 
@@ -42,7 +44,7 @@ public class SwaggerConfig {
 
     /**
      *
-     * @return
+     * @return ->security context
      */
     private SecurityContext securityContext() {
         return SecurityContext.builder().securityReferences(defaultAuth())
@@ -54,7 +56,7 @@ public class SwaggerConfig {
      * @return list of default authorization
      */
     private List<SecurityReference> defaultAuth() {
-        AuthorizationScope authorizationScope = new AuthorizationScope(
+        final AuthorizationScope authorizationScope = new AuthorizationScope(
                 "global", "accessEverything");
         AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
         authorizationScopes[0] = authorizationScope;

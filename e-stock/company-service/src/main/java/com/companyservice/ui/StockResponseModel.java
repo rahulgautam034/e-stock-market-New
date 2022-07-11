@@ -3,7 +3,6 @@ package com.companyservice.ui;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * stock response for user

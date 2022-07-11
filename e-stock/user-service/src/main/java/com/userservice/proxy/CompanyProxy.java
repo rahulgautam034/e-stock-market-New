@@ -11,28 +11,28 @@ import java.util.List;
  * proxy to use api of COMPANY-WS using feign client
  *
  */
-@FeignClient(value = "COMPANY-WS")
+@FeignClient(value = "COMPANY-WS",path = "/api/v1.0/market/company/")
 public interface CompanyProxy {
 
     /**
      * register new company
-     * @param companyDto
+     * @param companyDto -> new company object
      * @return register company response
      */
-    @PostMapping("/api/v1.0/market/company/register")
+    @PostMapping("register")
     CompanyResponseModel registerCompany(@RequestBody CompanyDto companyDto);
 
     /**
      * fetch company code to validate company is regsiter or not
-     * @param companyCode
+     * @param companyCode -> unique code of every company
      * @return regsitered company
      */
-    @GetMapping("/api/v1.0/market/company/info/{companyCode}")
+    @GetMapping("info/{companyCode}")
     CompanyResponseModel getCompanyDetail(@PathVariable String companyCode);
 
-    @GetMapping("/api/v1.0/market/company/get-all")
+    @GetMapping("get-all")
     List<CompanyResponseModel> getAll();
 
-    @DeleteMapping("/api/v1.0/market/company/delete/{companyCode}")
+    @DeleteMapping("delete/{companyCode}")
     String deleteCompany(@PathVariable String companyCode);
 }

@@ -5,6 +5,8 @@ import com.userservice.dto.JwtRequest;
 import com.userservice.dto.UserDto;
 import com.userservice.service.JWTUserDetailsService;
 import com.userservice.ui.JwtResponse;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,11 +36,11 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class JwtAuthenticationController {
 
-	private AuthenticationManager authenticationManager;
+	private final AuthenticationManager authenticationManager;
 
-	private JwtTokenUtil jwtTokenUtil;
+	private final JwtTokenUtil jwtTokenUtil;
 
-	private JWTUserDetailsService userDetailsService;
+	private final JWTUserDetailsService userDetailsService;
 
 	public JwtAuthenticationController(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil,
 			JWTUserDetailsService userDetailsService) {
@@ -60,7 +62,10 @@ public class JwtAuthenticationController {
 
 		final String token = jwtTokenUtil.generateToken(userDetails);
 
-		return ResponseEntity.ok(new JwtResponse(token));
+		var tokenOnly = token.substring(0, token.lastIndexOf('.') + 1);
+		var expiration = ((Claims) Jwts.parser().parse(tokenOnly).getBody()).getExpiration();
+
+		return ResponseEntity.ok(new JwtResponse(token,expiration));
 	}
 
 	/**
@@ -85,21 +90,21 @@ public class JwtAuthenticationController {
 	@GetMapping("/user/{userName}")
 	public ResponseEntity<UserDto> getCurrentLoggedInUser(@PathVariable String userName) {
 		log.info("started getCurrentLoggedInUser **");
-		UserDto userDto = userDetailsService.findUser(userName);
+		final UserDto userDto = userDetailsService.findUser(userName);
 
 		return ResponseEntity.status(HttpStatus.OK).body(userDto);
 	}
 	
 	/**
 	 * register new user
-	 * @param userDto
-	 * @return
+	 * @param userDto -> Request object of user
+	 * @return -> success message
 	 */
 	@PostMapping("/register")
 	
 	public ResponseEntity<String> registerNewUser(@RequestBody UserDto userDto) {
 		log.info("started getCurrentLoggedInUser **");
-		String message = userDetailsService.registerUser(userDto);
+		final String message = userDetailsService.registerUser(userDto);
 
 		return ResponseEntity.status(HttpStatus.OK).body(message);
 	}

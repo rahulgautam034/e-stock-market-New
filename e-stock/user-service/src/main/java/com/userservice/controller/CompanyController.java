@@ -2,10 +2,9 @@ package com.userservice.controller;
 
 import com.userservice.dto.CompanyDto;
 import com.userservice.exception.CompanyException;
-import com.userservice.exception.StockException;
 import com.userservice.proxy.CompanyProxy;
 import com.userservice.ui.CompanyResponseModel;
-import com.userservice.ui.StockResponseModel;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,16 +19,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1.0/market/user/company/")
 @Log4j2
+@CrossOrigin(origins = "*")
 public class CompanyController {
 
     /**
      * common proxy to call other service methods
      */
-    private CompanyProxy companyProxy;
+    private final CompanyProxy companyProxy;
 
     /**
      * for constructor di of variables
-     * @param companyProxy
+     * @param companyProxy -> feign company service di
      */
     public CompanyController(CompanyProxy companyProxy){
         this.companyProxy = companyProxy;
@@ -37,72 +37,64 @@ public class CompanyController {
 
     /**
      * register new company
-     * @param companyDto
+     * @param companyDto -> request object
      * @return company response
      */
+    @CircuitBreaker(name = "companyWSCircuitBreaker", fallbackMethod = "companyWSFallBack")
     @PostMapping("register")
     public ResponseEntity<?> registerCompany(@RequestBody CompanyDto companyDto) {
         log.info("register new company");
-
-        try{
-            CompanyResponseModel response =  companyProxy.registerCompany(companyDto);
+            final CompanyResponseModel response =  companyProxy.registerCompany(companyDto);
             return ResponseEntity.status(HttpStatus.OK).body(response);
-        }catch (Exception e){
-            throw new CompanyException(e.getMessage());
-        }
-
     }
 
     /**
      * fetch company detail
-     * @param companyCode
+     * @param companyCode->unique code of every company
      * @return return company response object
      */
+    @CircuitBreaker(name = "companyWSCircuitBreaker", fallbackMethod = "companyWSFallBack")
     @GetMapping("info/{companyCode}")
     public ResponseEntity<?> getCompanyDetail(@PathVariable String companyCode) {
         log.info("get company detail by companyCode:{}",companyCode);
-        try{
             final CompanyResponseModel response =  companyProxy.getCompanyDetail(companyCode);
             return ResponseEntity.status(HttpStatus.OK).body(response);
-        }catch (Exception e){
-            throw new CompanyException(e.getMessage());
-        }
-
-
     }
 
     /**
      * fetch all companies
      * @return list of companies
      */
+    @CircuitBreaker(name = "companyWSCircuitBreaker", fallbackMethod = "companyWSFallBack")
     @GetMapping("get-all")
     public ResponseEntity<List<CompanyResponseModel>> getAll() {
         log.info("get all companies");
-        try{
             final List<CompanyResponseModel> response =  companyProxy.getAll();
             return ResponseEntity.status(HttpStatus.OK).body(response);
-        }catch (Exception e){
-            throw new CompanyException(e.getMessage());
-        }
     }
 
     /**
      * delete company with the help of company code
-     * @param companyCode
+     * @param companyCode->unique code of every company
      * @return response message
      */
+    @CircuitBreaker(name = "companyWSCircuitBreaker", fallbackMethod = "companyWSFallBack")
     @DeleteMapping("delete/{companyCode}")
     public ResponseEntity<?> deleteCompany(@PathVariable final String companyCode) {
         log.info("delete company by companycode :{}",companyCode);
+        final String response = companyProxy.deleteCompany(companyCode);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
 
-        try {
+    }
 
-            final String response = companyProxy.deleteCompany(companyCode);
-
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        }catch (Exception e){
-            throw new CompanyException(e.getMessage());
-        }
-
+    /**
+     * show error response if COMPANY-WS is down
+     * @param e exception
+     * @return fallback message
+     */
+    private ResponseEntity<?> companyWSFallBack(final Exception e) {
+        log.info("companyWSFallBack called");
+        String message = (e.getMessage() != null && !e.getMessage().isEmpty()) ? e.getMessage() : "within myTestFallBack method. COMPANY-WS is down";
+        throw new CompanyException(message);
     }
 }

@@ -1,5 +1,6 @@
 package com.stockmarket.config;
 
+import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
  * model mapper configuration
  *
  */
+@NoArgsConstructor
 @Configuration
 public class ModelMapperConfig {
         /**
@@ -15,7 +17,6 @@ public class ModelMapperConfig {
          */
         @Bean
         public ModelMapper modelMapper() {
-            ModelMapper modelMapper = new ModelMapper();
-            return modelMapper;
+            return  new ModelMapper();
         }
 }

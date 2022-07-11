@@ -1,18 +1,17 @@
 package com.companyservice.controller;
 
 import com.companyservice.dto.CompanyDto;
-import com.companyservice.entity.Company;
+import com.companyservice.exception.CompanyException;
 import com.companyservice.proxy.CommonProxy;
 import com.companyservice.service.CompanyService;
 import com.companyservice.ui.CompanyResponseModel;
 import com.companyservice.ui.StockResponseModel;
-import com.companyservice.exception.CompanyException;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,10 +50,11 @@ public class CompanyController {
      * @param companyDto-> user request object
      * @return company response
      */
+    @CircuitBreaker(name = "stockWSCircuitBreaker", fallbackMethod = "stockWSFallBack")
     @PostMapping("register")
     public ResponseEntity<?> registerCompany(@RequestBody CompanyDto companyDto) {
         log.info("register new company");
-        CompanyResponseModel response =  companyService.registerCompany(companyDto);
+        final CompanyResponseModel response =  companyService.registerCompany(companyDto);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -63,6 +63,7 @@ public class CompanyController {
      * @param companyCode -> unique code of company
      * @return return company response object
      */
+    @CircuitBreaker(name = "stockWSCircuitBreaker", fallbackMethod = "stockWSFallBack")
     @GetMapping("info/{companyCode}")
     public ResponseEntity<?> getCompanyDetail(@PathVariable final String companyCode) {
         log.info("get company detail by companyCode:{}",companyCode);
@@ -84,6 +85,7 @@ public class CompanyController {
      * fetch all companies
      * @return list of companies
      */
+    @CircuitBreaker(name = "stockWSCircuitBreaker", fallbackMethod = "stockWSFallBack")
     @GetMapping("get-all")
     public ResponseEntity<List<CompanyResponseModel>> getAll() {
         log.info("get all companies");
@@ -105,6 +107,7 @@ public class CompanyController {
      * @param companyCode -> unique code of company
      * @return response message
      */
+    @CircuitBreaker(name = "stockWSCircuitBreaker", fallbackMethod = "stockWSFallBack")
     @DeleteMapping("delete/{companyCode}")
     public ResponseEntity<?> deleteCompany(@PathVariable final String companyCode) {
         log.info("delete company by companycode :{}",companyCode);
@@ -118,12 +121,23 @@ public class CompanyController {
 
     private void setCompanyStock(List<CompanyResponseModel> companies,List<StockResponseModel> stocks){
 
-        for(CompanyResponseModel companyResponseModel : companies){
+        for(final CompanyResponseModel companyResponseModel : companies){
             final List<StockResponseModel> stockResponseModels = stocks.stream()
                     .filter(stock->
                             stock.getCompanyCode().equals(companyResponseModel.getCompanyCode())
                     ).collect(Collectors.toList());
             companyResponseModel.setStock(stockResponseModels);
         }
+    }
+
+    /**
+     * show error response if STOCK-WS is down
+     * @param e -> exception response
+     * @return fallback message
+     */
+    public ResponseEntity<?> stockWSFallBack(final Exception e) {
+        log.info("companyWSFallBack called");
+        String message = !e.getMessage().contains("503") && e.getMessage() != null ? e.getMessage() : "within stockWSFallBack method. STOCK-WS is down";
+        throw new CompanyException(message);
     }
 }

@@ -44,9 +44,9 @@ public class JWTUserDetailsService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
 		log.info("called loadUserByUsername");
-		Optional<AuthEntity> resp = authRepository.findByUserName(userName);
+		final Optional<AuthEntity> resp = authRepository.findByUserName(userName);
 		if (resp.isPresent()) {
-			AuthEntity user = resp.get();
+			final AuthEntity user = resp.get();
 			return new User(user.getUserName(), user.getPassword(), new ArrayList<>());
 		} else {
 			throw new UsernameNotFoundException("User not found with username: " + userName);
@@ -60,7 +60,7 @@ public class JWTUserDetailsService implements UserDetailsService {
 	 */
 	public static String bcryptPassword(String password) {
 		log.info("called bcryptPassword");
-		PasswordEncoder encoder = new BCryptPasswordEncoder();
+		final PasswordEncoder encoder = new BCryptPasswordEncoder();
 		return encoder.encode(password);
 	}
 
@@ -71,7 +71,7 @@ public class JWTUserDetailsService implements UserDetailsService {
 	public UserDto findUser(String userName) {
 		log.info("called findUser");
 		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-		Optional<AuthEntity> authEntity = authRepository.findByUserName(userName);
+		final Optional<AuthEntity> authEntity = authRepository.findByUserName(userName);
 
 		if (authEntity.isPresent()) {
 			return modelMapper.map(authEntity.get(), UserDto.class);
@@ -88,7 +88,7 @@ public class JWTUserDetailsService implements UserDetailsService {
 		if (checkIfUserExist(userDto.getUserName())) {
 			throw new StockException("User already exists for this userName");
 		}
-		AuthEntity authEntity = new AuthEntity();
+		final AuthEntity authEntity = new AuthEntity();
 		authEntity.setFirstName(userDto.getFirstName());
 		authEntity.setLastName(userDto.getLastName());
 		authEntity.setRole("USER");
@@ -102,7 +102,7 @@ public class JWTUserDetailsService implements UserDetailsService {
 	 * check is user already registered
 	 */
 	public boolean checkIfUserExist(String userName) {
-		Optional<AuthEntity> user =  authRepository.findByUserName(userName);
-		return user.isPresent() ? true :false;
+		final Optional<AuthEntity> user =  authRepository.findByUserName(userName);
+		return user.isPresent();
 	}
 }
