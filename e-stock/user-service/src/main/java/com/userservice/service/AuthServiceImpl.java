@@ -2,6 +2,7 @@ package com.userservice.service;
 
 import com.userservice.dto.AuthDTO;
 import com.userservice.entity.AuthEntity;
+import com.userservice.exception.StockException;
 import com.userservice.repository.AuthRepository;
 import org.springframework.stereotype.Service;
 
@@ -28,17 +29,15 @@ public class AuthServiceImpl implements AuthService {
 	public AuthEntity validateUser(AuthDTO authDTO) {
 		final Optional<AuthEntity> resp = userRepository.findByUserName(authDTO.getUserName());
 
-		if (resp.isPresent()) {
+		if(resp.isEmpty()){
+			throw new StockException("User not found in db");
+		}
 			final AuthEntity user = resp.get();
 			if (user.getPassword().equals(authDTO.getPassword())) {
 				return user;
 			} else {
 				return null;
 			}
-		} else {
-			return null;
-
 		}
-	}
 
 }

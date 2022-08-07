@@ -36,4 +36,6 @@ public interface CompanyService {
      * @return list of companies
      */
     List<CompanyResponseModel> getAll();
+
+    void setCompanyLatestStock(CompanyResponseModel response,String companyCode);
 }

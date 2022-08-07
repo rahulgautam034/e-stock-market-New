@@ -18,6 +18,6 @@ public class StockExceptionHandler {
         errorResponseModel.setCode(HttpStatus.BAD_REQUEST);
         errorResponseModel.setMessage(e.getMessage());
         errorResponseModel.setErrorReportingTime(LocalDateTime.now());
-        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(errorResponseModel);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponseModel);
     }
 }

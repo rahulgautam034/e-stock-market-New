@@ -11,9 +11,9 @@ public interface StockRepository extends JpaRepository<Stock,Long> {
 
     /**
      * find stock based on variables
-     * @param companyCode
-     * @param startDate
-     * @param endDate
+     * @param companyCode -> unique code of each company
+     * @param startDate -> search start date
+     * @param endDate -> search end date
      * @return list of stock
      */
     @Query(value = "SELECT * FROM stock u WHERE "
@@ -22,23 +22,23 @@ public interface StockRepository extends JpaRepository<Stock,Long> {
 
     /**
      * fetch all by company code
-     * @param companyCode
-     * @return
+     * @param companyCode -> unique code of each company
+     * @return -> list of stock of one company
      */
     List<Stock> findAllByCompanyCode(String companyCode);
 
     /**
      * fetch latest stock of each company based on company code
-     * @param companyCodes
+     * @param companyCodes -> unique code of each company
      * @return list of latest stock
      */
     @Query(value ="select * from stock inner join (select max(created_date) as MaxDate from stock group by company_code) tm on company_code " +
             "in (:companyCodes) and created_date = tm.MaxDate",nativeQuery = true)
-    List<Stock> findAllByCompanyCode(@Param("companyCodes") List<String> companyCodes);
+    List<Stock> findAllByCompanyCodes(@Param("companyCodes") List<String> companyCodes);
 
     /**
      * fetch one latest record
-     * @param companyCode
+     * @param companyCode -> unique code of each company
      * @return list one lastest record
      */
     @Query(value = "SELECT * FROM stock where company_code = :companyCode ORDER by created_date DESC LIMIT 1", nativeQuery = true)

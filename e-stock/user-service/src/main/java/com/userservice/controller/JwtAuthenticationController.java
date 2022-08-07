@@ -26,6 +26,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.log4j.Log4j2;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 /**
  * for authentication & validation
  *
@@ -41,6 +44,9 @@ public class JwtAuthenticationController {
 	private final JwtTokenUtil jwtTokenUtil;
 
 	private final JWTUserDetailsService userDetailsService;
+
+	private static final String DATE_TIME_FORMAT ="yyyy-MM-dd:HH:mm:ss";
+
 
 	public JwtAuthenticationController(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil,
 			JWTUserDetailsService userDetailsService) {
@@ -65,7 +71,8 @@ public class JwtAuthenticationController {
 		var tokenOnly = token.substring(0, token.lastIndexOf('.') + 1);
 		var expiration = ((Claims) Jwts.parser().parse(tokenOnly).getBody()).getExpiration();
 
-		return ResponseEntity.ok(new JwtResponse(token,expiration));
+		final DateFormat formatter = new SimpleDateFormat(JwtAuthenticationController.DATE_TIME_FORMAT);
+		return ResponseEntity.ok(new JwtResponse(token,formatter.format(expiration)));
 	}
 
 	/**

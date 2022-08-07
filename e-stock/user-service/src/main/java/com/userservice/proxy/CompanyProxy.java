@@ -27,8 +27,8 @@ public interface CompanyProxy {
      * @param companyCode -> unique code of every company
      * @return regsitered company
      */
-    @GetMapping("info/{companyCode}")
-    CompanyResponseModel getCompanyDetail(@PathVariable String companyCode);
+    @GetMapping("info/{companyCode}/{withStock}")
+    CompanyResponseModel getCompanyDetail(@PathVariable String companyCode,@PathVariable Boolean withStock);
 
     @GetMapping("get-all")
     List<CompanyResponseModel> getAll();

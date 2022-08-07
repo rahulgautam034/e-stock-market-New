@@ -2,7 +2,6 @@ package com.stockmarket.serviceImpl;
 
 import com.stockmarket.dto.StockDto;
 import com.stockmarket.entity.Stock;
-import com.stockmarket.exception.StockException;
 import com.stockmarket.proxy.CommonProxy;
 import com.stockmarket.repository.StockRepository;
 import com.stockmarket.service.StockService;
@@ -46,8 +45,7 @@ public class StockServiceImpl implements StockService {
     public Stock createStock(StockDto stockDto) {
         log.info("createStock method called");
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        CompanyResponseModel companyresponse = commonProxy.getCompanyDetail(stockDto.getCompanyCode());
-
+        CompanyResponseModel companyresponse = commonProxy.getCompanyDetail(stockDto.getCompanyCode(),false);
         final Stock stock = modelMapper.map(stockDto,Stock.class);
         stock.setCreatedDate(getCurrentDate());
         stock.setCompanyName(companyresponse.getCompanyName());
@@ -93,7 +91,7 @@ public class StockServiceImpl implements StockService {
      * @return list of company stock
      */
     @Override
-    public List<StockResponseModel> getCompanyStock(String companyCode) {
+    public List<StockResponseModel> getCompanyLatestStock(String companyCode) {
         log.info("getCompanyStock called to get stock of companyCode {}",companyCode);
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         List<Stock> stocks;
@@ -134,7 +132,7 @@ public class StockServiceImpl implements StockService {
      * @return list of stock of companies
      */
     @Override
-    public List<StockResponseModel> getAllStock(String companyCode) {
+    public List<StockResponseModel> getAllStockOfCompany(String companyCode) {
         log.info("getAllStock of companies by compancode");
         final List<Stock> stocks = stockRepository.findAllByCompanyCode(companyCode);
 
@@ -152,9 +150,9 @@ public class StockServiceImpl implements StockService {
      * @return list of stock of companies
      */
     @Override
-    public List<StockResponseModel> getAllStock(List<String> companyCodes) {
+    public List<StockResponseModel> getLatestStockOfCompanies(List<String> companyCodes) {
         log.info("getAllStock of companies by compancode");
-        final List<Stock> stocks = stockRepository.findAllByCompanyCode(companyCodes);
+        final List<Stock> stocks = stockRepository.findAllByCompanyCodes(companyCodes);
 
         List<StockResponseModel> stockResponseModelList = new ArrayList<>();
         if(!stocks.isEmpty()){

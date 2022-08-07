@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * jwt token response modal 
@@ -13,19 +12,12 @@ import java.util.Date;
  */
 @Getter
 @Setter
+@AllArgsConstructor
 public class JwtResponse implements Serializable {
 
 	private static final long serialVersionUID = -8091879091924046844L;
-	private final String jwtToken;
+	private final String token;
 
-	private final Date expiration;
+	private final String expiration;
 
-	public JwtResponse(String jwtToken,Date expiration) {
-		this.jwtToken = jwtToken;
-		this.expiration = expiration;
-	}
-
-	public String getToken() {
-		return this.jwtToken;
-	}
 }

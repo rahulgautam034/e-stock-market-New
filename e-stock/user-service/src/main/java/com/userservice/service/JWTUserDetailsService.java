@@ -73,12 +73,10 @@ public class JWTUserDetailsService implements UserDetailsService {
 		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 		final Optional<AuthEntity> authEntity = authRepository.findByUserName(userName);
 
-		if (authEntity.isPresent()) {
-			return modelMapper.map(authEntity.get(), UserDto.class);
-		} else {
-			log.error("Error fetching user");
-			return null;
+		if(authEntity.isEmpty()) {
+			throw new StockException("user not found");
 		}
+			return modelMapper.map(authEntity.get(), UserDto.class);
 	}
 
 	/**

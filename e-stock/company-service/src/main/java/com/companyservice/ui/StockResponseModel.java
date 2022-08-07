@@ -3,6 +3,7 @@ package com.companyservice.ui;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * stock response for user
@@ -10,9 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 public class StockResponseModel {
 
-    private String id;
+    private Long id;
 
     private double stockPrice;
 
@@ -22,23 +24,4 @@ public class StockResponseModel {
 
     private String createdDate;
 
-    public void setId(Long id) {
-        this.id = id.toString();
-    }
-
-    public void setStockPrice(double stockPrice) {
-        this.stockPrice = stockPrice;
-    }
-
-    public void setCompanyCode(String companyCode) {
-        this.companyCode = companyCode;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
-
-    public void setCreatedDate(String createdDate) {
-        this.createdDate = createdDate;
-    }
 }

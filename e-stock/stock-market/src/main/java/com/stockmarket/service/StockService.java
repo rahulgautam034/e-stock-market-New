@@ -40,14 +40,14 @@ public interface StockService {
      * @param companyCode -> unique code of every company
      * @return  company latest one stock only
      */
-    List<StockResponseModel> getCompanyStock(String companyCode);
+    List<StockResponseModel> getCompanyLatestStock(String companyCode);
 
     /**
      * fetch all stock of company by company code
      * @param companyCode -> unique code of every comany
      * @return list of all stock
      */
-    List<StockResponseModel> getAllStock(String companyCode);
+    List<StockResponseModel> getAllStockOfCompany(String companyCode);
 
     /**
      * fetch all stock
@@ -60,7 +60,7 @@ public interface StockService {
      * @param companyCodes -> unique code of every company
      * @return list of companies stock
      */
-    List<StockResponseModel> getAllStock(List<String> companyCodes);
+    List<StockResponseModel> getLatestStockOfCompanies(List<String> companyCodes);
 
 
 }

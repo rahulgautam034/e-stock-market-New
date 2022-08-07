@@ -1,6 +1,5 @@
 package com.companyservice.proxy;
 
-import com.companyservice.dto.StockDto;
 import com.companyservice.ui.StockResponseModel;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;

@@ -1,7 +1,6 @@
 package com.companyservice.service;
 
 import com.companyservice.dto.CompanyDto;
-import com.companyservice.dto.StockDto;
 import com.companyservice.entity.Company;
 import com.companyservice.proxy.CommonProxy;
 import com.companyservice.repository.CompanyRepository;
@@ -12,7 +11,6 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,9 +30,12 @@ public class CompanyServiceImpl implements CompanyService {
      */
     private final ModelMapper modelMapper;
 
-    public CompanyServiceImpl(CompanyRepository companyRepository,ModelMapper modelMapper){
+    private final CommonProxy commonProxy;
+
+    public CompanyServiceImpl(CompanyRepository companyRepository,ModelMapper modelMapper,CommonProxy commonProxy){
         this.companyRepository=companyRepository;
         this.modelMapper = modelMapper;
+        this.commonProxy =commonProxy;
     }
 
     /**
@@ -45,7 +46,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public CompanyResponseModel registerCompany(CompanyDto companyDto) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        CompanyResponseModel companyResponseModel = null;
+
         if(companyDto.getCompanyTurnover() <= 100_000_000){
             throw new CompanyException("Company Turnover is low");
         }
@@ -110,6 +111,14 @@ public class CompanyServiceImpl implements CompanyService {
         return companies.stream()
                 .map(company -> modelMapper.map(company,CompanyResponseModel.class)).collect(Collectors.toList());
 
+    }
+
+    @Override
+    public void setCompanyLatestStock(CompanyResponseModel response,String companyCode) {
+        final List<StockResponseModel> stocks = commonProxy.getCompanyStock(companyCode);
+        if(!stocks.isEmpty()){
+            response.setStock(stocks);
+        }
     }
 
 }

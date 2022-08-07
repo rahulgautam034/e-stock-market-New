@@ -1,4 +1,4 @@
-package com.userservice.exception;
+package com.stockmarket.exception;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

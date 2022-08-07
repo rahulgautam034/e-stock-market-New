@@ -57,7 +57,7 @@ public class CompanyController {
     @GetMapping("info/{companyCode}")
     public ResponseEntity<?> getCompanyDetail(@PathVariable String companyCode) {
         log.info("get company detail by companyCode:{}",companyCode);
-            final CompanyResponseModel response =  companyProxy.getCompanyDetail(companyCode);
+            final CompanyResponseModel response =  companyProxy.getCompanyDetail(companyCode,true);
             return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

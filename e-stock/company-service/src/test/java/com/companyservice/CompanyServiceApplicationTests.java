@@ -15,7 +15,7 @@ class CompanyServiceApplicationTests {
 	 * context load test
 	 */
 	@Test
-	public void contextLoads() {
+	void contextLoads() {
 	}
 
 }

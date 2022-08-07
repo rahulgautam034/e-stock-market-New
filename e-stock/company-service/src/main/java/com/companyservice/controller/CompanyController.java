@@ -64,18 +64,13 @@ public class CompanyController {
      * @return return company response object
      */
     @CircuitBreaker(name = "stockWSCircuitBreaker", fallbackMethod = "stockWSFallBack")
-    @GetMapping("info/{companyCode}")
-    public ResponseEntity<?> getCompanyDetail(@PathVariable final String companyCode) {
+    @GetMapping("info/{companyCode}/{withStock}")
+    public ResponseEntity<?> getCompanyDetail(@PathVariable final String companyCode,@PathVariable Boolean withStock) {
         log.info("get company detail by companyCode:{}",companyCode);
         final CompanyResponseModel response =  companyService.getCompanyDetail(companyCode,false);
 
-        if(response != null){
-            final List<StockResponseModel> stocks = commonProxy.getCompanyStock(companyCode);
-            if(!stocks.isEmpty()){
-
-                response.setStock(stocks);
-
-            }
+        if(response != null && withStock){
+            companyService.setCompanyLatestStock(response,companyCode);
         }
         return ResponseEntity.status(HttpStatus.OK).body(response);
 
@@ -137,7 +132,7 @@ public class CompanyController {
      */
     public ResponseEntity<?> stockWSFallBack(final Exception e) {
         log.info("companyWSFallBack called");
-        String message = !e.getMessage().contains("503") && e.getMessage() != null ? e.getMessage() : "within stockWSFallBack method. STOCK-WS is down";
+        final String message = !e.getMessage().contains("503") && e.getMessage() != null ? e.getMessage() : "within stockWSFallBack method. STOCK-WS is down";
         throw new CompanyException(message);
     }
 }
