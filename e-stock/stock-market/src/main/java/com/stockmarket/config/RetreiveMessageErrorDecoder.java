@@ -18,21 +18,21 @@ import java.io.Reader;
 public class RetreiveMessageErrorDecoder implements ErrorDecoder {
 
     @Override
-    public Exception decode(String methodKey, Response response) {
+    public Exception decode(final String methodKey, final Response response) {
         String message = null;
         Reader reader = null;
 
         try {
             reader = response.body().asReader();
             //Easy way to read the stream and get a String object
-            String result = CharStreams.toString(reader);
+            final String result = CharStreams.toString(reader);
             //use a Jackson ObjectMapper to convert the Json String into a
             //Pojo
-            ObjectMapper mapper = new ObjectMapper();
+            final ObjectMapper mapper = new ObjectMapper();
             //just in case you missed an attribute in the Pojo
             mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
             //init the Pojo
-            ExceptionMessage exceptionMessage = mapper.readValue(result,
+            final ExceptionMessage exceptionMessage = mapper.readValue(result,
                     ExceptionMessage.class);
 
             message = exceptionMessage.getMessage();

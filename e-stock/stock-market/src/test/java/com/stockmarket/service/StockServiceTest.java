@@ -36,7 +36,7 @@ class StockServiceTest {
     private StockRepository stockRepository;
 
     @Mock
-    private CompanyResponseModel companyResponseModel;
+    private CompanyResponseModel companyResponse;
 
     private final ModelMapper modelMapper = new ModelMapper();
 
@@ -48,35 +48,35 @@ class StockServiceTest {
 
     @Test
     void createStockTest() {
-        Stock stock = new Stock(1L,121.2,"TEST","test","2022-07-13 05:16:44");
-        StockDto stockDto = new StockDto(121.2,"TEST");
-        Mockito.when(commonProxy.getCompanyDetail(Mockito.any(),Mockito.any())).thenReturn(companyResponseModel);
+        final Stock stock = new Stock(1L,121.2,"TEST","test","2022-07-13 05:16:44");
+        final StockDto stockDto = new StockDto(121.2,"TEST");
+        Mockito.when(commonProxy.getCompanyDetail(Mockito.any(),Mockito.any())).thenReturn(companyResponse);
         Mockito.when(stockRepository.save(Mockito.any())).thenReturn(stock);
 
-        Stock res =  stockService.createStock(stockDto);
+        final Stock res =  stockService.createStock(stockDto);
         Assertions.assertNotNull(res);
     }
 
     @Test
     void getAllTest() {
-        String startDate = "2022-07-10";
-        String endDate = "2022-07-13";
-        List<Stock> stock = new ArrayList<>();
-        Stock stock1 = new Stock(1L,121.2,"TEST","test","2022-07-13 05:16:44");
-        Stock stock2 = new Stock(2L,132,"TEST","test1","2022-07-13 06:16:44");
+        final String startDate = "2022-07-10";
+        final String endDate = "2022-07-13";
+        final List<Stock> stock = new ArrayList<>();
+        final Stock stock1 = new Stock(1L,121.2,"TEST","test","2022-07-13 05:16:44");
+        final Stock stock2 = new Stock(2L,132,"TEST","test1","2022-07-13 06:16:44");
         stock.add(stock1);
         stock.add(stock2);
         Mockito.when(stockRepository.findByCriteria(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(stock);
-        List<Stock> res =  stockService.getAll("TEST",startDate,endDate);
+        final List<Stock> res =  stockService.getAll("TEST",startDate,endDate);
         Assertions.assertNotNull(res);
         Assertions.assertEquals(stock.size(),res.size());
     }
 
     @Test
     void deleteCompanyStock() {
-        List<Stock> stock = new ArrayList<>();
-        Stock stock1 = new Stock(1L,121.2,"TEST","test","2022-07-13 05:16:44");
-        Stock stock2 = new Stock(2L,132,"TEST","test1","2022-07-13 06:16:44");
+        final List<Stock> stock = new ArrayList<>();
+        final Stock stock1 = new Stock(1L,121.2,"TEST","test","2022-07-13 05:16:44");
+        final Stock stock2 = new Stock(2L,132,"TEST","test1","2022-07-13 06:16:44");
         stock.add(stock1);
         stock.add(stock2);
         Mockito.when(stockRepository.findAllByCompanyCode(Mockito.any())).thenReturn(stock);
@@ -86,54 +86,54 @@ class StockServiceTest {
 
     @Test
     void getCompanyLatestStockTest() {
-        List<Stock> stockList = new ArrayList<>();
-        Stock stock = new Stock(1L,121.2,"TEST","test","2022-07-13 05:16:44");
+        final List<Stock> stockList = new ArrayList<>();
+        final Stock stock = new Stock(1L,121.2,"TEST","test","2022-07-13 05:16:44");
         stockList.add(stock);
         Mockito.when(stockRepository.findLatestRecord(Mockito.any())).thenReturn(stockList);
-        List<StockResponseModel> res =  stockService.getCompanyLatestStock(stock.getCompanyCode());
+        final List<StockResponseModel> res =  stockService.getCompanyLatestStock(stock.getCompanyCode());
         Assertions.assertNotNull(res);
         Assertions.assertEquals(stockList.size(),res.size());
     }
 
     @Test
     void getAllStockTest() {
-        List<Stock> stockList = new ArrayList<>();
-        Stock stock1 = new Stock(1L,121.2,"TEST","test","2022-07-13 05:16:44");
-        Stock stock2 = new Stock(2L,132,"ABC","test1","2022-07-13 06:16:44");
+        final List<Stock> stockList = new ArrayList<>();
+        final Stock stock1 = new Stock(1L,121.2,"TEST","test","2022-07-13 05:16:44");
+        final Stock stock2 = new Stock(2L,132,"ABC","test1","2022-07-13 06:16:44");
         stockList.add(stock1);
         stockList.add(stock2);
         Mockito.when(stockRepository.findAll()).thenReturn(stockList);
-        List<StockResponseModel> res =  stockService.getAllStock();
+        final List<StockResponseModel> res =  stockService.getAllStock();
         Assertions.assertNotNull(res);
         Assertions.assertEquals(stockList.size(),res.size());
     }
 
     @Test
     void getAllStockOfCompanyTest() {
-        List<Stock> stockList = new ArrayList<>();
-        Stock stock1 = new Stock(1L,121.2,"TEST","test","2022-07-13 05:16:44");
-        Stock stock2 = new Stock(2L,132,"TEST","test1","2022-07-13 06:16:44");
+        final List<Stock> stockList = new ArrayList<>();
+        final Stock stock1 = new Stock(1L,121.2,"TEST","test","2022-07-13 05:16:44");
+        final Stock stock2 = new Stock(2L,132,"TEST","test1","2022-07-13 06:16:44");
         stockList.add(stock1);
         stockList.add(stock2);
         Mockito.when(stockRepository.findAllByCompanyCode(Mockito.any())).thenReturn(stockList);
-        List<StockResponseModel> res =  stockService.getAllStockOfCompany("TEST");
+        final List<StockResponseModel> res =  stockService.getAllStockOfCompany("TEST");
         Assertions.assertNotNull(res);
         Assertions.assertEquals(stockList.size(),res.size());
     }
 
     @Test
     void getLatestStockOfCompaniesTest() {
-        List<Stock> stockList = new ArrayList<>();
-        Stock stock1 = new Stock(1L,121.2,"TEST","test","2022-07-13 05:16:44");
-        Stock stock2 = new Stock(2L,132,"TEST","test1","2022-07-13 06:16:44");
+        final List<Stock> stockList = new ArrayList<>();
+        final Stock stock1 = new Stock(1L,121.2,"TEST","test","2022-07-13 05:16:44");
+        final Stock stock2 = new Stock(2L,132,"TEST","test1","2022-07-13 06:16:44");
         stockList.add(stock1);
         stockList.add(stock2);
 
-        List<String> ids = stockList
+        final List<String> ids = stockList
                 .stream().map(Stock::getCompanyCode)
                 .collect(Collectors.toList());
         Mockito.when(stockRepository.findAllByCompanyCodes(Mockito.any())).thenReturn(stockList);
-        List<StockResponseModel> res =  stockService.getLatestStockOfCompanies(ids);
+        final List<StockResponseModel> res =  stockService.getLatestStockOfCompanies(ids);
 
         Assertions.assertNotNull(res);
         Assertions.assertEquals(stockList.size(),res.size());

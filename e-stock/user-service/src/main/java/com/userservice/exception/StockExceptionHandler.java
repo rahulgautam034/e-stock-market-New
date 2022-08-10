@@ -1,7 +1,6 @@
 package com.userservice.exception;
 
-import com.stockmarket.ui.ErrorResponseModel;
-import com.userservice.exception.StockException;
+import com.userservice.ui.ErrorResponseModel;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +14,11 @@ import java.time.LocalDateTime;
 public class StockExceptionHandler {
 
     @ExceptionHandler(StockException.class)
-    public ResponseEntity<ErrorResponseModel> handleStockException(Exception e){
+    public ResponseEntity<ErrorResponseModel> handleStockException(final Exception e){
         final ErrorResponseModel errorResponseModel = new ErrorResponseModel();
         errorResponseModel.setCode(HttpStatus.BAD_REQUEST);
         errorResponseModel.setMessage(e.getMessage());
-        errorResponseModel.setErrorReportingTime(LocalDateTime.now());
+        errorResponseModel.setErrorTime(LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(errorResponseModel);
     }
 }

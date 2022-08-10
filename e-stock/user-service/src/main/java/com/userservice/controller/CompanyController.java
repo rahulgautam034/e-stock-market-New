@@ -31,7 +31,7 @@ public class CompanyController {
      * for constructor di of variables
      * @param companyProxy -> feign company service di
      */
-    public CompanyController(CompanyProxy companyProxy){
+    public CompanyController(final CompanyProxy companyProxy){
         this.companyProxy = companyProxy;
     }
 
@@ -42,7 +42,7 @@ public class CompanyController {
      */
     @CircuitBreaker(name = "companyWSCircuitBreaker", fallbackMethod = "companyWSFallBack")
     @PostMapping("register")
-    public ResponseEntity<?> registerCompany(@RequestBody CompanyDto companyDto) {
+    public ResponseEntity<?> registerCompany(@RequestBody final CompanyDto companyDto) {
         log.info("register new company");
             final CompanyResponseModel response =  companyProxy.registerCompany(companyDto);
             return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -55,7 +55,7 @@ public class CompanyController {
      */
     @CircuitBreaker(name = "companyWSCircuitBreaker", fallbackMethod = "companyWSFallBack")
     @GetMapping("info/{companyCode}")
-    public ResponseEntity<?> getCompanyDetail(@PathVariable String companyCode) {
+    public ResponseEntity<?> getCompanyDetail(@PathVariable final String companyCode) {
         log.info("get company detail by companyCode:{}",companyCode);
             final CompanyResponseModel response =  companyProxy.getCompanyDetail(companyCode,true);
             return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -92,9 +92,9 @@ public class CompanyController {
      * @param e exception
      * @return fallback message
      */
-    private ResponseEntity<?> companyWSFallBack(final Exception e) {
+    public ResponseEntity<?> companyWSFallBack(final Exception e) {
         log.info("companyWSFallBack called");
-        String message = (e.getMessage() != null && !e.getMessage().isEmpty()) ? e.getMessage() : "within myTestFallBack method. COMPANY-WS is down";
+        final String message = e.getMessage() != null && !e.getMessage().isEmpty() ? e.getMessage() : "within myTestFallBack method. COMPANY-WS is down";
         throw new CompanyException(message);
     }
 }

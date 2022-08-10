@@ -43,16 +43,17 @@ public class JwtAuthenticationController {
 
 	private final JwtTokenUtil jwtTokenUtil;
 
-	private final JWTUserDetailsService userDetailsService;
+	private final JWTUserDetailsService userService;
 
 	private static final String DATE_TIME_FORMAT ="yyyy-MM-dd:HH:mm:ss";
 
 
-	public JwtAuthenticationController(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil,
-			JWTUserDetailsService userDetailsService) {
+	public JwtAuthenticationController(final AuthenticationManager authenticationManager,
+									   final JwtTokenUtil jwtTokenUtil,
+									   final JWTUserDetailsService userService) {
 		this.authenticationManager = authenticationManager;
 		this.jwtTokenUtil = jwtTokenUtil;
-		this.userDetailsService = userDetailsService;
+		this.userService = userService;
 	}
 
 	/**
@@ -60,16 +61,16 @@ public class JwtAuthenticationController {
 	 *
 	 */
 	@RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
+	public ResponseEntity<?> createAuthenticationToken(@RequestBody final JwtRequest authenticationRequest) throws Exception {
 		log.info("started createAuthenticationToken **");
 		authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 
-		final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+		final UserDetails userDetails = userService.loadUserByUsername(authenticationRequest.getUsername());
 
 		final String token = jwtTokenUtil.generateToken(userDetails);
 
-		var tokenOnly = token.substring(0, token.lastIndexOf('.') + 1);
-		var expiration = ((Claims) Jwts.parser().parse(tokenOnly).getBody()).getExpiration();
+		final var tokenOnly = token.substring(0, token.lastIndexOf('.') + 1);
+		final var expiration = ((Claims) Jwts.parser().parse(tokenOnly).getBody()).getExpiration();
 
 		final DateFormat formatter = new SimpleDateFormat(JwtAuthenticationController.DATE_TIME_FORMAT);
 		return ResponseEntity.ok(new JwtResponse(token,formatter.format(expiration)));
@@ -79,7 +80,7 @@ public class JwtAuthenticationController {
 	 * internal authentication by authentication manager
 	 *
 	 */
-	private void authenticate(String username, String password) throws Exception {
+	private void authenticate(final String username,final String password) throws Exception {
 		log.info("started authenticate **");
 		try {
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
@@ -95,9 +96,9 @@ public class JwtAuthenticationController {
 	 *
 	 */
 	@GetMapping("/user/{userName}")
-	public ResponseEntity<UserDto> getCurrentLoggedInUser(@PathVariable String userName) {
+	public ResponseEntity<UserDto> getCurrentLoggedInUser(@PathVariable final String userName) {
 		log.info("started getCurrentLoggedInUser **");
-		final UserDto userDto = userDetailsService.findUser(userName);
+		final UserDto userDto = userService.findUser(userName);
 
 		return ResponseEntity.status(HttpStatus.OK).body(userDto);
 	}
@@ -109,9 +110,9 @@ public class JwtAuthenticationController {
 	 */
 	@PostMapping("/register")
 	
-	public ResponseEntity<String> registerNewUser(@RequestBody UserDto userDto) {
+	public ResponseEntity<String> registerNewUser(@RequestBody final UserDto userDto) {
 		log.info("started getCurrentLoggedInUser **");
-		final String message = userDetailsService.registerUser(userDto);
+		final String message = userService.registerUser(userDto);
 
 		return ResponseEntity.status(HttpStatus.OK).body(message);
 	}

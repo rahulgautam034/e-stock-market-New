@@ -30,7 +30,9 @@ public class StockServiceImpl implements StockService {
     private final CommonProxy commonProxy;
     private static final String DATE_TIME_FORMAT ="yyyy-MM-dd:HH:mm:ss";
 
-    public StockServiceImpl(StockRepository stockRepository,ModelMapper modelMapper,CommonProxy commonProxy) {
+    public StockServiceImpl(final StockRepository stockRepository,
+                            final ModelMapper modelMapper,
+                            final CommonProxy commonProxy) {
         this.stockRepository= stockRepository;
         this.modelMapper = modelMapper;
         this.commonProxy =commonProxy;
@@ -42,10 +44,10 @@ public class StockServiceImpl implements StockService {
      * @return saved stock
      */
     @Override
-    public Stock createStock(StockDto stockDto) {
+    public Stock createStock(final StockDto stockDto) {
         log.info("createStock method called");
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        CompanyResponseModel companyresponse = commonProxy.getCompanyDetail(stockDto.getCompanyCode(),false);
+        final CompanyResponseModel companyresponse = commonProxy.getCompanyDetail(stockDto.getCompanyCode(),false);
         final Stock stock = modelMapper.map(stockDto,Stock.class);
         stock.setCreatedDate(getCurrentDate());
         stock.setCompanyName(companyresponse.getCompanyName());
@@ -60,7 +62,7 @@ public class StockServiceImpl implements StockService {
      * @return list of stock
      */
     @Override
-    public List<Stock> getAll(String companyCode, String startDate, String endDate) {
+    public List<Stock> getAll(final String companyCode, final String startDate,final String endDate) {
         log.info("getAll called to get all stock of company with startDate {} and endDate {}",startDate,endDate);
         return stockRepository.findByCriteria(companyCode,startDate,endDate);
     }
@@ -71,9 +73,8 @@ public class StockServiceImpl implements StockService {
      * @return success message
      */
     @Override
-    public String deleteAllCompanyStock(String companyCode) {
+    public String deleteAllCompanyStock(final String companyCode) {
         log.info("deleteAllCompanyStock called to delete all stock of companyCode {}",companyCode);
-
         final List<Long> stockIds = stockRepository.findAllByCompanyCode(companyCode)
                 .stream().map(Stock::getId).collect(Collectors.toList());
 
@@ -91,7 +92,7 @@ public class StockServiceImpl implements StockService {
      * @return list of company stock
      */
     @Override
-    public List<StockResponseModel> getCompanyLatestStock(String companyCode) {
+    public List<StockResponseModel> getCompanyLatestStock(final String companyCode) {
         log.info("getCompanyStock called to get stock of companyCode {}",companyCode);
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         List<Stock> stocks;
@@ -101,13 +102,13 @@ public class StockServiceImpl implements StockService {
             stocks = stockRepository.findAll();
         }
 
-        List<StockResponseModel> stockResponseModelList = new ArrayList<>();
+        List<StockResponseModel> stockList = new ArrayList<>();
         if(!stocks.isEmpty()){
-            stockResponseModelList = stocks.stream()
+            stockList = stocks.stream()
                     .map(stock -> modelMapper.map(stock,StockResponseModel.class)).collect(Collectors.toList());
         }
 
-        return stockResponseModelList;
+        return stockList;
     }
 
     /**
@@ -118,12 +119,12 @@ public class StockServiceImpl implements StockService {
     public List<StockResponseModel> getAllStock() {
         log.info("getAllStock of whole companies");
         final List<Stock> stocks = stockRepository.findAll();
-        List<StockResponseModel> stockResponseModelList = new ArrayList<>();
+        List<StockResponseModel> stockList = new ArrayList<>();
         if(!stocks.isEmpty()){
-            stockResponseModelList = mapObject(stocks);
+            stockList = mapObject(stocks);
         }
 
-        return stockResponseModelList;
+        return stockList;
     }
 
     /**
@@ -132,16 +133,16 @@ public class StockServiceImpl implements StockService {
      * @return list of stock of companies
      */
     @Override
-    public List<StockResponseModel> getAllStockOfCompany(String companyCode) {
+    public List<StockResponseModel> getAllStockOfCompany(final String companyCode) {
         log.info("getAllStock of companies by compancode");
         final List<Stock> stocks = stockRepository.findAllByCompanyCode(companyCode);
 
-        List<StockResponseModel> stockResponseModelList = new ArrayList<>();
+        List<StockResponseModel> stockList = new ArrayList<>();
         if(!stocks.isEmpty()){
-            stockResponseModelList = mapObject(stocks);
+            stockList = mapObject(stocks);
         }
 
-        return stockResponseModelList;
+        return stockList;
     }
 
     /**
@@ -150,16 +151,16 @@ public class StockServiceImpl implements StockService {
      * @return list of stock of companies
      */
     @Override
-    public List<StockResponseModel> getLatestStockOfCompanies(List<String> companyCodes) {
+    public List<StockResponseModel> getLatestStockOfCompanies(final List<String> companyCodes) {
         log.info("getAllStock of companies by compancode");
         final List<Stock> stocks = stockRepository.findAllByCompanyCodes(companyCodes);
 
-        List<StockResponseModel> stockResponseModelList = new ArrayList<>();
+        List<StockResponseModel> stockList = new ArrayList<>();
         if(!stocks.isEmpty()){
-            stockResponseModelList = mapObject(stocks);
+            stockList = mapObject(stocks);
         }
 
-        return stockResponseModelList;
+        return stockList;
     }
 
     /**
@@ -167,7 +168,7 @@ public class StockServiceImpl implements StockService {
      * @param stocks list of stock
      * @return list of converted response model stock objects
      */
-    private List<StockResponseModel> mapObject(List<Stock> stocks){
+    private List<StockResponseModel> mapObject(final List<Stock> stocks){
         log.info("convert the stock object to response object");
         return stocks.stream()
                 .map(stock -> modelMapper.map(stock,StockResponseModel.class)).collect(Collectors.toList());

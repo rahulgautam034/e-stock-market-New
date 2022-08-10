@@ -9,6 +9,6 @@ import com.userservice.entity.AuthEntity;
  */
 public interface AuthService {
 
-	public AuthEntity validateUser(AuthDTO user);
+	AuthEntity validateUser(AuthDTO user);
 
 }

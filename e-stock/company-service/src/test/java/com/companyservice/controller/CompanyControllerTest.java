@@ -34,62 +34,63 @@ class CompanyControllerTest {
 
     @Test
     void registerCompanyTest() {
-        CompanyDto companyDto = new CompanyDto("test","tim",100000000000L,"www.test.com","TEST");
-        CompanyResponseModel responseModel = new CompanyResponseModel();
+        final CompanyDto companyDto = new CompanyDto("test","tim",100_000_000_000L,"www.test.com","TEST");
+        final CompanyResponseModel responseModel = new CompanyResponseModel();
         responseModel.setId("Id122");
         responseModel.setCompanyName(companyDto.getCompanyName());
         responseModel.setCompanyCeo(companyDto.getCompanyCeo());
         Mockito.when(companyService.registerCompany(Mockito.any())).thenReturn(responseModel);
-        ResponseEntity<?> res = companyController.registerCompany(companyDto);
+        final ResponseEntity<?> res = companyController.registerCompany(companyDto);
         Assertions.assertNotNull(res);
 
     }
 
     @Test
     void companyDetailTest() {
-        CompanyResponseModel responseModel = new CompanyResponseModel();
+        final CompanyResponseModel responseModel = new CompanyResponseModel();
         responseModel.setId("Id122");
         responseModel.setCompanyName("test");
         responseModel.setCompanyCeo("tim");
         responseModel.setCompanyCode("Test");
         Mockito.when(companyService.getCompanyDetail(Mockito.any(),Mockito.any())).thenReturn(responseModel);
-        ResponseEntity<?> res = companyController.getCompanyDetail(responseModel.getCompanyCeo(),false);
+        final ResponseEntity<?> res = companyController.getCompanyDetail(responseModel.getCompanyCeo(),false);
         Assertions.assertNotNull(res);
 
     }
 
     @Test
     void companyDetailTest1() {
-        CompanyResponseModel responseModel = new CompanyResponseModel();
+        final CompanyResponseModel responseModel = new CompanyResponseModel();
         responseModel.setId("Id122");
         responseModel.setCompanyName("test");
         responseModel.setCompanyCeo("tim");
         responseModel.setCompanyCode("Test");
         Mockito.when(companyService.getCompanyDetail(Mockito.any(),Mockito.any())).thenReturn(responseModel);
-        ResponseEntity<?> res = companyController.getCompanyDetail(responseModel.getCompanyCeo(),true);
+        final ResponseEntity<?> res = companyController.getCompanyDetail(responseModel.getCompanyCeo(),true);
         Assertions.assertNotNull(res);
 
     }
 
     @Test
     void getAllTest() {
-        List<CompanyResponseModel> responseModelList =  new ArrayList<>();
-        CompanyResponseModel responseModel = new CompanyResponseModel();
+        final List<CompanyResponseModel> responseModelList =  new ArrayList<>();
+        final CompanyResponseModel responseModel = new CompanyResponseModel();
         responseModel.setId("Id122");
         responseModel.setCompanyName("test");
         responseModel.setCompanyCeo("tim");
         responseModel.setCompanyCode("TEST");
         responseModelList.add(responseModel);
-        List<StockResponseModel> stockResponseModels =  new ArrayList<>();
-        StockResponseModel stockResponseModel = new StockResponseModel(1L,120.0,"TEST","test","2022-07-13 12:33:55");
-        stockResponseModels.add(stockResponseModel);
+        final List<StockResponseModel> stockResponseModels =  new ArrayList<>();
+        final StockResponseModel stockResponse = new StockResponseModel(1L,120.0,"TEST",
+                "test","2022-07-13 12:33:55");
+        stockResponseModels.add(stockResponse);
         Mockito.when(companyService.getAll()).thenReturn(responseModelList);
         Mockito.when(commonProxy.getCompanyStock(responseModelList
                 .stream()
                 .map(CompanyResponseModel::getCompanyCode)
                 .collect(Collectors.toList())
         )).thenReturn(stockResponseModels);
-        ResponseEntity<List<CompanyResponseModel>> res = companyController.getAll();
+        final ResponseEntity<List<CompanyResponseModel>> res = companyController.getAll();
         Assertions.assertNotNull(res);
     }
 
@@ -97,5 +98,10 @@ class CompanyControllerTest {
     void deleteCompanyTest() {
         companyController.deleteCompany("TEST");
         Mockito.verify(companyService,Mockito.times(1)).deleteCompany(Mockito.any());
+    }
+
+    @Test
+    void testFallBack(){
+
     }
 }

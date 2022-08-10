@@ -31,81 +31,81 @@ class StockControllerTest {
 
     @Test
     void addStockTest() {
-        Stock stock = new Stock(1L,121.2,"TEST","test","2022-07-13 05:16:44");
-        StockDto stockDto = new StockDto(121.2,"TEST");
+        final Stock stock = new Stock(1L,121.2,"TEST","test","2022-07-13 05:16:44");
+        final StockDto stockDto = new StockDto(121.2,"TEST");
         Mockito.when(stockService.createStock(Mockito.any())).thenReturn(stock);
-        ResponseEntity<?> res =  stockController.addNewStock(stockDto);
+        final ResponseEntity<?> res =  stockController.addNewStock(stockDto);
         Assertions.assertNotNull(res);
     }
 
     @Test
     void getAllStockOfCompanyTest() {
-        List<StockResponseModel> stockResponseModelList = new ArrayList<>();
-        StockResponseModel stock = new StockResponseModel(1L,121.2,"TEST","test","2022-07-13 05:16:44");
-        stockResponseModelList.add(stock);
-        Mockito.when(stockService.getAllStockOfCompany(Mockito.any())).thenReturn(stockResponseModelList);
-        ResponseEntity<List<StockResponseModel>> res =  stockController.getAllStockOfCompany(stock.getCompanyCode());
+        final List<StockResponseModel> stockList = new ArrayList<>();
+        final StockResponseModel stock = new StockResponseModel(1L,121.2,"TEST","test","2022-07-13 05:16:44");
+        stockList.add(stock);
+        Mockito.when(stockService.getAllStockOfCompany(Mockito.any())).thenReturn(stockList);
+        final ResponseEntity<List<StockResponseModel>> res =  stockController.getAllStockOfCompany(stock.getCompanyCode());
         Assertions.assertNotNull(res);
         Assertions.assertNotNull(res.getBody());
-        Assertions.assertEquals(stockResponseModelList.size(),res.getBody().size());
+        Assertions.assertEquals(stockList.size(),res.getBody().size());
     }
 
     @Test
     void getCompanyLatestStockTest() {
-        List<StockResponseModel> stockResponseModelList = new ArrayList<>();
-        StockResponseModel stock = new StockResponseModel(1L,121.2,"TEST","test","2022-07-13 05:16:44");
-        stockResponseModelList.add(stock);
-        Mockito.when(stockService.getCompanyLatestStock(Mockito.any())).thenReturn(stockResponseModelList);
-        ResponseEntity<List<StockResponseModel>> res =  stockController.getCompanyLatestStock(stock.getCompanyCode());
+        final List<StockResponseModel> stockList = new ArrayList<>();
+        final StockResponseModel stock = new StockResponseModel(1L,121.2,"TEST","test","2022-07-13 05:16:44");
+        stockList.add(stock);
+        Mockito.when(stockService.getCompanyLatestStock(Mockito.any())).thenReturn(stockList);
+        final ResponseEntity<List<StockResponseModel>> res =  stockController.getCompanyLatestStock(stock.getCompanyCode());
         Assertions.assertNotNull(res);
         Assertions.assertNotNull(res.getBody());
-        Assertions.assertEquals(stockResponseModelList.size(),res.getBody().size());
+        Assertions.assertEquals(stockList.size(),res.getBody().size());
     }
 
     @Test
     void getAllStockTest() {
-        List<StockResponseModel> stockResponseModelList = new ArrayList<>();
-        StockResponseModel stock1 = new StockResponseModel(1L,121.2,"TEST","test","2022-07-13 05:16:44");
-        StockResponseModel stock2 = new StockResponseModel(2L,132,"ABC","test1","2022-07-13 06:16:44");
+        final List<StockResponseModel> stockList = new ArrayList<>();
+        final StockResponseModel stock1 = new StockResponseModel(1L,121.2,"TEST","test","2022-07-13 05:16:44");
+        final StockResponseModel stock2 = new StockResponseModel(2L,132,"ABC","test1","2022-07-13 06:16:44");
 
-        stockResponseModelList.add(stock1);
-        stockResponseModelList.add(stock2);
-        Mockito.when(stockService.getAllStock()).thenReturn(stockResponseModelList);
-        ResponseEntity<List<StockResponseModel>> res =  stockController.getAllStock();
+        stockList.add(stock1);
+        stockList.add(stock2);
+        Mockito.when(stockService.getAllStock()).thenReturn(stockList);
+        final ResponseEntity<List<StockResponseModel>> res =  stockController.getAllStock();
         Assertions.assertNotNull(res);
         Assertions.assertNotNull(res.getBody());
-        Assertions.assertEquals(stockResponseModelList.size(),res.getBody().size());
+        Assertions.assertEquals(stockList.size(),res.getBody().size());
     }
 
     @Test
     void getLatestStockOfCompaniesTest() {
-        List<StockResponseModel> stockResponseModelList = new ArrayList<>();
-        StockResponseModel stock1 = new StockResponseModel(1L,121.2,"TEST","test","2022-07-13 05:16:44");
-        StockResponseModel stock2 = new StockResponseModel(2L,132,"ABC","test1","2022-07-13 06:16:44");
+        final List<StockResponseModel> stockList = new ArrayList<>();
+        final StockResponseModel stock1 = new StockResponseModel(1L,121.2,"TEST","test","2022-07-13 05:16:44");
+        final StockResponseModel stock2 = new StockResponseModel(2L,132,"ABC","test1","2022-07-13 06:16:44");
 
-        stockResponseModelList.add(stock1);
-        stockResponseModelList.add(stock2);
-        Mockito.when(stockService.getLatestStockOfCompanies(Mockito.any())).thenReturn(stockResponseModelList);
-        ResponseEntity<List<StockResponseModel>> res =  stockController.getLatestStockOfCompanies(stockResponseModelList
+        stockList.add(stock1);
+        stockList.add(stock2);
+        Mockito.when(stockService.getLatestStockOfCompanies(Mockito.any())).thenReturn(stockList);
+        final ResponseEntity<List<StockResponseModel>> res =  stockController.getLatestStockOfCompanies(stockList
                 .stream().map(StockResponseModel::getCompanyCode)
                 .collect(Collectors.toList()));
 
         Assertions.assertNotNull(res);
         Assertions.assertNotNull(res.getBody());
-        Assertions.assertEquals(stockResponseModelList.size(),res.getBody().size());
+        Assertions.assertEquals(stockList.size(),res.getBody().size());
     }
 
     @Test
     void getAllTest() {
-        String startDate = "2022-07-10";
-        String endDate = "2022-07-13";
-        List<Stock> stock = new ArrayList<>();
-        Stock stock1 = new Stock(1L,121.2,"TEST","test","2022-07-13 05:16:44");
-        Stock stock2 = new Stock(2L,132,"TEST","test1","2022-07-13 06:16:44");
+        final String startDate = "2022-07-10";
+        final String endDate = "2022-07-13";
+        final List<Stock> stock = new ArrayList<>();
+        final Stock stock1 = new Stock(1L,121.2,"TEST","test","2022-07-13 05:16:44");
+        final Stock stock2 = new Stock(2L,132,"TEST","test1","2022-07-13 06:16:44");
         stock.add(stock1);
         stock.add(stock2);
         Mockito.when(stockService.getAll(Mockito.any(),Mockito.any(),Mockito.any())).thenReturn(stock);
-        ResponseEntity<List<Stock>> res =  stockController.getAll("TEST",startDate,endDate);
+        final ResponseEntity<List<Stock>> res =  stockController.getAll("TEST",startDate,endDate);
         Assertions.assertNotNull(res);
         Assertions.assertNotNull(res.getBody());
         Assertions.assertEquals(stock.size(),res.getBody().size());

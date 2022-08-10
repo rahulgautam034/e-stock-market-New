@@ -22,6 +22,6 @@ public class ErrorResponseModel {
 
     private String message;
 
-    private LocalDateTime errorReportingTime;
+    private LocalDateTime errorTime;
 
 }

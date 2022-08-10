@@ -27,17 +27,18 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+	private final JwtAuthenticationEntryPoint authEntryPoint;
 
-	private final UserDetailsService jwtUserDetailsService;
+	private final UserDetailsService userService;
 
 	private final JwtRequestFilter jwtRequestFilter;
 
-	public WebSecurityConfig(JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
-			UserDetailsService jwtUserDetailsService, JwtRequestFilter jwtRequestFilter) {
+	public WebSecurityConfig(final JwtAuthenticationEntryPoint authEntryPoint,
+							 final UserDetailsService userService,
+							 final JwtRequestFilter jwtRequestFilter) {
 		super();
-		this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
-		this.jwtUserDetailsService = jwtUserDetailsService;
+		this.authEntryPoint = authEntryPoint;
+		this.userService = userService;
 		this.jwtRequestFilter = jwtRequestFilter;
 	}
 
@@ -49,9 +50,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 * @throws Exception -> throw exception if encoding failed
 	 */
 	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+	public void configureGlobal(final AuthenticationManagerBuilder auth) throws Exception {
 		log.info("configureGlobal called");
-		auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
+		auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
 	}
 
 	/**
@@ -77,7 +78,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 * configura
 	 */
 	@Override
-	protected void configure(HttpSecurity httpSecurity) throws Exception {
+	protected void configure(final HttpSecurity httpSecurity) throws Exception {
 		log.info("configure called");
 		// We don't need CSRF for this example
 		httpSecurity.csrf().disable()
@@ -94,7 +95,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.anyRequest().authenticated().and().
 				// make sure we use stateless session; session won't be used to
 				// store user's state.
-				exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
+				exceptionHandling().authenticationEntryPoint(authEntryPoint).and().sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
 		// Add a filter to validate the tokens with every request

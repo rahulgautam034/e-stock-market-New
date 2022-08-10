@@ -21,7 +21,7 @@ public class CompanyServiceApplication {
 	 * main method -> application start
 	 * @param args -> args for command line runner
 	 */
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		SpringApplication.run(CompanyServiceApplication.class, args);
 	}
 

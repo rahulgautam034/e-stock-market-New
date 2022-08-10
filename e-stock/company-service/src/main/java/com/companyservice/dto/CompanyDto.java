@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * company request body
+ */
 @Getter
 @Setter
 @NoArgsConstructor

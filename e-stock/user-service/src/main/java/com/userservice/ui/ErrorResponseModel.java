@@ -1,4 +1,4 @@
-package com.stockmarket.ui;
+package com.userservice.ui;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,6 +22,6 @@ public class ErrorResponseModel {
 
     private String message;
 
-    private LocalDateTime errorReportingTime;
+    private LocalDateTime errorTime;
 
 }

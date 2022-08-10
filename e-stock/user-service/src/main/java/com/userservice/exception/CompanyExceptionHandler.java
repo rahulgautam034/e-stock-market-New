@@ -1,6 +1,6 @@
 package com.userservice.exception;
 
-import com.stockmarket.ui.ErrorResponseModel;
+import com.userservice.ui.ErrorResponseModel;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,13 +23,13 @@ public class CompanyExceptionHandler {
      */
     @ExceptionHandler(CompanyException.class)
     public ResponseEntity<ErrorResponseModel> handleCompanyException(final Exception exception){
-        final ErrorResponseModel errorResponseModel = new ErrorResponseModel();
+        final ErrorResponseModel errorResponse = new ErrorResponseModel();
 
-        errorResponseModel.setCode(HttpStatus.BAD_REQUEST);
-        errorResponseModel.setMessage(exception.getMessage());
-        errorResponseModel.setErrorReportingTime(LocalDateTime.now());
+        errorResponse.setCode(HttpStatus.BAD_REQUEST);
+        errorResponse.setMessage(exception.getMessage());
+        errorResponse.setErrorTime(LocalDateTime.now());
 
-        return ResponseEntity.status(HttpStatus.OK).body(errorResponseModel);
+        return ResponseEntity.status(HttpStatus.OK).body(errorResponse);
 
     }
 }

@@ -6,7 +6,6 @@ import com.companyservice.exception.CompanyException;
 import com.companyservice.proxy.CommonProxy;
 import com.companyservice.repository.CompanyRepository;
 import com.companyservice.ui.CompanyResponseModel;
-import com.companyservice.ui.StockResponseModel;
 import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,19 +43,19 @@ class CompanyServiceTest {
 
     @Test
     void registerCompanyTest() {
-        CompanyDto companyDto = new CompanyDto("test","tim",1000000L,"www.test.com","TEST");
+        final CompanyDto companyDto = new CompanyDto("test","tim",1_000_000L,"www.test.com","TEST");
         Assertions.assertThrows(CompanyException.class,()-> companyService.registerCompany(companyDto));
     }
 
     @Test
     void registerCompanyTest1() {
-        CompanyDto companyDto = new CompanyDto("test","tim",10000000000L,"www.test.com","TEST");
-        Company responseModel = new Company();
+        final CompanyDto companyDto = new CompanyDto("test","tim",10_000_000_000L,"www.test.com","TEST");
+        final Company responseModel = new Company();
         responseModel.setId("Id122");
         responseModel.setCompanyName(companyDto.getCompanyName());
         responseModel.setCompanyCeo(companyDto.getCompanyCeo());
         Mockito.when(companyRepository.save(Mockito.any())).thenReturn(responseModel);
-        CompanyResponseModel res = companyService.registerCompany(companyDto);
+        final CompanyResponseModel res = companyService.registerCompany(companyDto);
         Assertions.assertNotNull(res);
     }
 
@@ -68,20 +67,20 @@ class CompanyServiceTest {
 
     @Test
     void companyDetailTest1() {
-        Company responseModel = new Company();
+        final Company responseModel = new Company();
         responseModel.setId("Id122");
         responseModel.setCompanyName("test");
         responseModel.setCompanyCeo("tim");
         responseModel.setCompanyCode("Test");
         Mockito.when(companyRepository.getByCompanyCode(Mockito.any())).thenReturn(responseModel);
-        CompanyResponseModel res = companyService.getCompanyDetail(responseModel.getCompanyCode(),true);
+        final CompanyResponseModel res = companyService.getCompanyDetail(responseModel.getCompanyCode(),true);
         Assertions.assertNotNull(res);
 
     }
 
     @Test
     void deleteCompanyTest() {
-        Company responseModel = new Company();
+        final Company responseModel = new Company();
         responseModel.setId("Id122");
         responseModel.setCompanyName("test");
         responseModel.setCompanyCeo("tim");
@@ -93,22 +92,22 @@ class CompanyServiceTest {
 
     @Test
     void getAllTest() {
-        List<Company> responseModelList =  new ArrayList<>();
-        Company responseModel = new Company();
+        final List<Company> responseModelList =  new ArrayList<>();
+        final Company responseModel = new Company();
         responseModel.setId("Id122");
         responseModel.setCompanyName("test");
         responseModel.setCompanyCeo("tim");
         responseModel.setCompanyCode("TEST");
         responseModelList.add(responseModel);
         Mockito.when(companyRepository.findAll()).thenReturn(responseModelList);
-        List<CompanyResponseModel> res = companyService.getAll();
+        final List<CompanyResponseModel> res = companyService.getAll();
         Assertions.assertNotNull(res);
         Assertions.assertEquals(responseModelList.size(),res.size());
     }
 
     @Test
     void setCompanyLatestStockTest() {
-        CompanyResponseModel responseModel = new CompanyResponseModel();
+        final CompanyResponseModel responseModel = new CompanyResponseModel();
         companyService.setCompanyLatestStock(responseModel,"TEST");
         Mockito.verify(commonProxy).getCompanyStock(Mockito.anyString());
     }

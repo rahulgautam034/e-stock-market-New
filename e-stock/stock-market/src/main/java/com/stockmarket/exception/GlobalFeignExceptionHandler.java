@@ -15,11 +15,11 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class GlobalFeignExceptionHandler {
     @ExceptionHandler(FeignException.class)
-    public ResponseEntity<ErrorResponseModel> handleFeignStatusException(FeignException e, HttpServletResponse response) {
-        ErrorResponseModel errorResponseModel = new ErrorResponseModel();
-        errorResponseModel.setMessage(e.getMessage());
-        errorResponseModel.setCode(HttpStatus.BAD_REQUEST);
-        errorResponseModel.setErrorReportingTime(LocalDateTime.now());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponseModel);
+    public ResponseEntity<ErrorResponseModel> handleFeignStatusException(final FeignException e, final HttpServletResponse response) {
+        final ErrorResponseModel errorResponse = new ErrorResponseModel();
+        errorResponse.setMessage(e.getMessage());
+        errorResponse.setCode(HttpStatus.BAD_REQUEST);
+        errorResponse.setErrorTime(LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 }

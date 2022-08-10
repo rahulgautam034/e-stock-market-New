@@ -8,10 +8,17 @@ import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
+/**
+ * swagger documentation class
+ */
 @NoArgsConstructor
 @Configuration
 public class SwaggerConfig {
 
+    /**
+     * get all apis
+     * @return ->
+     */
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)

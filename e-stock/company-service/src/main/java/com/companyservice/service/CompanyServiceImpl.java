@@ -32,7 +32,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     private final CommonProxy commonProxy;
 
-    public CompanyServiceImpl(CompanyRepository companyRepository,ModelMapper modelMapper,CommonProxy commonProxy){
+    public CompanyServiceImpl(final CompanyRepository companyRepository,final ModelMapper modelMapper,final CommonProxy commonProxy){
         this.companyRepository=companyRepository;
         this.modelMapper = modelMapper;
         this.commonProxy =commonProxy;
@@ -44,7 +44,7 @@ public class CompanyServiceImpl implements CompanyService {
      * @return company response
      */
     @Override
-    public CompanyResponseModel registerCompany(CompanyDto companyDto) {
+    public CompanyResponseModel registerCompany(final CompanyDto companyDto) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         if(companyDto.getCompanyTurnover() <= 100_000_000){
@@ -71,15 +71,15 @@ public class CompanyServiceImpl implements CompanyService {
     public CompanyResponseModel getCompanyDetail(final String companyCode,final Boolean isLocal) {
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         final Company company = companyRepository.getByCompanyCode(companyCode);
-        CompanyResponseModel companyResponseModel = null;
+        CompanyResponseModel companyResponse = null;
 
         if(company == null && !isLocal){
             throw new CompanyException("Company not Register in our database.");
         }
         if(company != null){
-             companyResponseModel = modelMapper.map(company,CompanyResponseModel.class);
+            companyResponse = modelMapper.map(company,CompanyResponseModel.class);
         }
-        return companyResponseModel;
+        return companyResponse;
     }
 
     /**
@@ -114,7 +114,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public void setCompanyLatestStock(CompanyResponseModel response,String companyCode) {
+    public void setCompanyLatestStock(final CompanyResponseModel response,final String companyCode) {
         final List<StockResponseModel> stocks = commonProxy.getCompanyStock(companyCode);
         if(!stocks.isEmpty()){
             response.setStock(stocks);

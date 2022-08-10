@@ -13,11 +13,11 @@ import java.time.LocalDateTime;
 public class StockExceptionHandler {
 
     @ExceptionHandler(StockException.class)
-    public ResponseEntity<ErrorResponseModel> handleStockException(Exception e){
-        final ErrorResponseModel errorResponseModel = new ErrorResponseModel();
-        errorResponseModel.setCode(HttpStatus.BAD_REQUEST);
-        errorResponseModel.setMessage(e.getMessage());
-        errorResponseModel.setErrorReportingTime(LocalDateTime.now());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponseModel);
+    public ResponseEntity<ErrorResponseModel> handleStockException(final Exception e){
+        final ErrorResponseModel errorResponse = new ErrorResponseModel();
+        errorResponse.setCode(HttpStatus.BAD_REQUEST);
+        errorResponse.setMessage(e.getMessage());
+        errorResponse.setErrorTime(LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 }

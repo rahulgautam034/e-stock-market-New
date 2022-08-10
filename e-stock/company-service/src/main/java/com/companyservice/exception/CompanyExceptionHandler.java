@@ -23,13 +23,13 @@ public class CompanyExceptionHandler {
      */
     @ExceptionHandler(CompanyException.class)
     public ResponseEntity<ErrorResponseModel> handleCompanyException(final CompanyException exception){
-        final ErrorResponseModel errorResponseModel = new ErrorResponseModel();
+        final ErrorResponseModel errorResponse = new ErrorResponseModel();
 
-        errorResponseModel.setCode(HttpStatus.BAD_REQUEST);
-        errorResponseModel.setMessage(exception.getMessage());
-        errorResponseModel.setErrorReportingTime(LocalDateTime.now());
+        errorResponse.setCode(HttpStatus.BAD_REQUEST);
+        errorResponse.setMessage(exception.getMessage());
+        errorResponse.setErrorTime(LocalDateTime.now());
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponseModel);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 
     }
 }

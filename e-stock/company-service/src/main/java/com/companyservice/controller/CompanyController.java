@@ -40,7 +40,7 @@ public class CompanyController {
      * @param companyService include company operation's
      * @param commonProxy for feign call -> one service to other
      */
-    public CompanyController(CompanyService companyService,CommonProxy commonProxy){
+    public CompanyController(final CompanyService companyService,final CommonProxy commonProxy){
         this.companyService =companyService;
         this.commonProxy = commonProxy;
     }
@@ -52,7 +52,7 @@ public class CompanyController {
      */
     @CircuitBreaker(name = "stockWSCircuitBreaker", fallbackMethod = "stockWSFallBack")
     @PostMapping("register")
-    public ResponseEntity<?> registerCompany(@RequestBody CompanyDto companyDto) {
+    public ResponseEntity<?> registerCompany(@RequestBody final CompanyDto companyDto) {
         log.info("register new company");
         final CompanyResponseModel response =  companyService.registerCompany(companyDto);
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -65,7 +65,7 @@ public class CompanyController {
      */
     @CircuitBreaker(name = "stockWSCircuitBreaker", fallbackMethod = "stockWSFallBack")
     @GetMapping("info/{companyCode}/{withStock}")
-    public ResponseEntity<?> getCompanyDetail(@PathVariable final String companyCode,@PathVariable Boolean withStock) {
+    public ResponseEntity<?> getCompanyDetail(@PathVariable final String companyCode,@PathVariable final Boolean withStock) {
         log.info("get company detail by companyCode:{}",companyCode);
         final CompanyResponseModel response =  companyService.getCompanyDetail(companyCode,false);
 
@@ -114,25 +114,25 @@ public class CompanyController {
 
     }
 
-    private void setCompanyStock(List<CompanyResponseModel> companies,List<StockResponseModel> stocks){
+    private void setCompanyStock(final List<CompanyResponseModel> companies,final List<StockResponseModel> stocks){
 
-        for(final CompanyResponseModel companyResponseModel : companies){
-            final List<StockResponseModel> stockResponseModels = stocks.stream()
+        for(final CompanyResponseModel responseModel : companies){
+            final List<StockResponseModel> stockResponse = stocks.stream()
                     .filter(stock->
-                            stock.getCompanyCode().equals(companyResponseModel.getCompanyCode())
+                            stock.getCompanyCode().equals(responseModel.getCompanyCode())
                     ).collect(Collectors.toList());
-            companyResponseModel.setStock(stockResponseModels);
+            responseModel.setStock(stockResponse);
         }
     }
 
     /**
      * show error response if STOCK-WS is down
-     * @param e -> exception response
+     * @param exception -> exception response
      * @return fallback message
      */
-    public ResponseEntity<?> stockWSFallBack(final Exception e) {
+    public ResponseEntity<?> stockWSFallBack(final Exception exception) {
         log.info("companyWSFallBack called");
-        final String message = !e.getMessage().contains("503") && e.getMessage() != null ? e.getMessage() : "within stockWSFallBack method. STOCK-WS is down";
+        final String message = !exception.getMessage().contains("503") && exception.getMessage() != null ? exception.getMessage() : "within stockWSFallBack method. STOCK-WS is down";
         throw new CompanyException(message);
     }
 }

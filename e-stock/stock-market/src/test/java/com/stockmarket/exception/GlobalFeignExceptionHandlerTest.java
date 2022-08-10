@@ -1,12 +1,15 @@
 package com.stockmarket.exception;
 
+import com.stockmarket.ui.ErrorResponseModel;
 import feign.FeignException;
 import lombok.NoArgsConstructor;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -25,6 +28,7 @@ class GlobalFeignExceptionHandlerTest {
 
     @Test
     void handleFeignStatusExceptionTest() {
-        exceptionHandler.handleFeignStatusException(feignException,response);
+        ResponseEntity<ErrorResponseModel> error =  exceptionHandler.handleFeignStatusException(feignException,response);
+        Assertions.assertNotNull(error);
     }
 }

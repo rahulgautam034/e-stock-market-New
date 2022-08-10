@@ -32,7 +32,7 @@ public class JWTUserDetailsService implements UserDetailsService {
 
 	private final ModelMapper modelMapper;
 
-	public JWTUserDetailsService(AuthRepository authRepository, ModelMapper modelMapper) {
+	public JWTUserDetailsService(final AuthRepository authRepository,final ModelMapper modelMapper) {
 		this.authRepository = authRepository;
 		this.modelMapper = modelMapper;
 	}
@@ -42,7 +42,7 @@ public class JWTUserDetailsService implements UserDetailsService {
 	 *
 	 */
 	@Override
-	public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(final String userName) throws UsernameNotFoundException {
 		log.info("called loadUserByUsername");
 		final Optional<AuthEntity> resp = authRepository.findByUserName(userName);
 		if (resp.isPresent()) {
@@ -58,7 +58,7 @@ public class JWTUserDetailsService implements UserDetailsService {
 	 * bcryptPassword
 	 *
 	 */
-	public static String bcryptPassword(String password) {
+	public static String bcryptPassword(final String password) {
 		log.info("called bcryptPassword");
 		final PasswordEncoder encoder = new BCryptPasswordEncoder();
 		return encoder.encode(password);
@@ -68,7 +68,7 @@ public class JWTUserDetailsService implements UserDetailsService {
 	 * find user from DB
 	 *
 	 */
-	public UserDto findUser(String userName) {
+	public UserDto findUser(final String userName) {
 		log.info("called findUser");
 		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 		final Optional<AuthEntity> authEntity = authRepository.findByUserName(userName);
@@ -82,7 +82,7 @@ public class JWTUserDetailsService implements UserDetailsService {
 	/**
 	 * register new user
 	 */
-	public String registerUser(UserDto userDto) {
+	public String registerUser(final UserDto userDto) {
 		if (checkIfUserExist(userDto.getUserName())) {
 			throw new StockException("User already exists for this userName");
 		}
@@ -99,7 +99,7 @@ public class JWTUserDetailsService implements UserDetailsService {
 	/**
 	 * check is user already registered
 	 */
-	public boolean checkIfUserExist(String userName) {
+	public boolean checkIfUserExist(final String userName) {
 		final Optional<AuthEntity> user =  authRepository.findByUserName(userName);
 		return user.isPresent();
 	}

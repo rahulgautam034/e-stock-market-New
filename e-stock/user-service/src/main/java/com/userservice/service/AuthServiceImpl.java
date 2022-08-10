@@ -17,7 +17,7 @@ public class AuthServiceImpl implements AuthService {
 
 	public final AuthRepository userRepository;
 
-	public AuthServiceImpl(AuthRepository userRepository) {
+	public AuthServiceImpl(final AuthRepository userRepository) {
 		this.userRepository = userRepository;
 	}
 
@@ -26,18 +26,14 @@ public class AuthServiceImpl implements AuthService {
 	 *
 	 */
 	@Override
-	public AuthEntity validateUser(AuthDTO authDTO) {
+	public AuthEntity validateUser(final AuthDTO authDTO) {
 		final Optional<AuthEntity> resp = userRepository.findByUserName(authDTO.getUserName());
 
 		if(resp.isEmpty()){
 			throw new StockException("User not found in db");
 		}
 			final AuthEntity user = resp.get();
-			if (user.getPassword().equals(authDTO.getPassword())) {
-				return user;
-			} else {
-				return null;
-			}
+			return user.getPassword().equals(authDTO.getPassword()) ? user : null;
 		}
 
 }
