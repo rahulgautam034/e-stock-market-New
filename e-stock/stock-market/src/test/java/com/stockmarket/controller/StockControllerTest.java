@@ -2,6 +2,7 @@ package com.stockmarket.controller;
 
 import com.stockmarket.dto.StockDto;
 import com.stockmarket.entity.Stock;
+import com.stockmarket.exception.StockException;
 import com.stockmarket.service.StockService;
 import com.stockmarket.ui.StockResponseModel;
 import lombok.NoArgsConstructor;
@@ -115,5 +116,12 @@ class StockControllerTest {
     void deleteCompanyStock() {
         stockController.deleteCompanyStock("TEST");
         Mockito.verify(stockService).deleteAllCompanyStock(Mockito.any());
+    }
+
+    @Test
+    void testFallBack(){
+        Throwable t = new Throwable("503 error");
+        Exception e = new Exception(t);
+        Assertions.assertThrows(StockException.class,()->stockController.companyWSFallBack(e));
     }
 }

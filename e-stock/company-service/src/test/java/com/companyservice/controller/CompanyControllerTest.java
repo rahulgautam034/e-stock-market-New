@@ -1,6 +1,7 @@
 package com.companyservice.controller;
 
 import com.companyservice.dto.CompanyDto;
+import com.companyservice.exception.CompanyException;
 import com.companyservice.proxy.CommonProxy;
 import com.companyservice.service.CompanyService;
 import com.companyservice.ui.CompanyResponseModel;
@@ -102,6 +103,8 @@ class CompanyControllerTest {
 
     @Test
     void testFallBack(){
-
+        Throwable t = new Throwable("503 error");
+        Exception e = new Exception(t);
+        Assertions.assertThrows(CompanyException.class,()->companyController.stockWSFallBack(e));
     }
 }

@@ -48,6 +48,13 @@ class CompanyServiceTest {
     }
 
     @Test
+    void registerCompanyAlreadyRegisterTest() {
+        final CompanyDto companyDto = new CompanyDto("test","tim",1_000_000_000L,"www.test.com","TEST");
+        Mockito.when(companyRepository.getByCompanyCode(Mockito.any())).thenReturn(new Company());
+        Assertions.assertThrows(CompanyException.class,()-> companyService.registerCompany(companyDto));
+    }
+
+    @Test
     void registerCompanyTest1() {
         final CompanyDto companyDto = new CompanyDto("test","tim",10_000_000_000L,"www.test.com","TEST");
         final Company responseModel = new Company();
@@ -88,6 +95,12 @@ class CompanyServiceTest {
         Mockito.when(companyRepository.getByCompanyCode(Mockito.any())).thenReturn(responseModel);
         companyService.deleteCompany("TEST");
         Mockito.verify(companyRepository,Mockito.times(1)).getByCompanyCode(Mockito.any());
+    }
+
+    @Test
+    void deleteCompanyExceptionTest() {
+        Mockito.when(companyRepository.getByCompanyCode(Mockito.any())).thenReturn(null);
+        Assertions.assertThrows(CompanyException.class,()->companyService.deleteCompany("TEST"));
     }
 
     @Test
