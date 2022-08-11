@@ -1,0 +1,42 @@
+
+server:
+  port: 8081
+
+spring:
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:3000"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+            allowedHeaders:
+              - "*"
+
+      routes:
+        - id: user-ws
+          uri: lb://user-ws
+          predicates:
+            - Path=/api/v1.0/market/user/**
+
+      discovery:
+        enabled: true
+        locator:
+          enabled: true
+
+
+  application:
+    name: api-gateway
+
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      - defaultZone: http://localhost:8761/eureka
+  instance:
+    hostname: localhost

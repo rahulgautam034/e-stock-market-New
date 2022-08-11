@@ -71,7 +71,7 @@
 			eureka-server
 		</module>
 		<module>
-			api-gateway
+			api-gateway1
 		</module>
 		<module>stock-market</module>
 		<module>user-service</module>
