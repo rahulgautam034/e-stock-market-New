@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/v1.0/market/company/")
 @Log4j2
-@CrossOrigin(origins="*")
 public class CompanyController {
 
     /**

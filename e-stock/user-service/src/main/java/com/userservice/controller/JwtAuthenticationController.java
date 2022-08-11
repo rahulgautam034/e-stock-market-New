@@ -14,14 +14,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 import lombok.extern.log4j.Log4j2;
@@ -33,8 +26,8 @@ import java.text.SimpleDateFormat;
  * for authentication & validation
  *
  */
+
 @RestController
-@CrossOrigin(origins = "*")
 @RequestMapping("/api/v1.0/market/user")
 @Log4j2
 public class JwtAuthenticationController {
@@ -60,7 +53,7 @@ public class JwtAuthenticationController {
 	 * authenticate user when trying to login
 	 *
 	 */
-	@RequestMapping(value = "/authenticate", method = RequestMethod.POST)
+	@PostMapping("/authenticate")
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody final JwtRequest authenticationRequest) throws Exception {
 		log.info("started createAuthenticationToken **");
 		authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
@@ -95,7 +88,7 @@ public class JwtAuthenticationController {
 	 * find logged in user detail
 	 *
 	 */
-	@GetMapping("/user/{userName}")
+	@GetMapping("/{userName}")
 	public ResponseEntity<UserDto> getCurrentLoggedInUser(@PathVariable final String userName) {
 		log.info("started getCurrentLoggedInUser **");
 		final UserDto userDto = userService.findUser(userName);
@@ -109,7 +102,6 @@ public class JwtAuthenticationController {
 	 * @return -> success message
 	 */
 	@PostMapping("/register")
-	
 	public ResponseEntity<String> registerNewUser(@RequestBody final UserDto userDto) {
 		log.info("started getCurrentLoggedInUser **");
 		final String message = userService.registerUser(userDto);

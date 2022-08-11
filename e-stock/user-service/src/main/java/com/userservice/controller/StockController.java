@@ -19,7 +19,6 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1.0/market/user/stock")
 @Log4j2
-@CrossOrigin(origins = "*")
 public class StockController {
 
     private final StockProxy stockProxy;
