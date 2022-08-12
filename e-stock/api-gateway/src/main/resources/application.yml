@@ -32,6 +32,11 @@ spring:
   application:
     name: api-gateway
 
+  boot:
+    admin:
+      client:
+        url: "http://localhost:9090"
+
 eureka:
   client:
     fetch-registry: true
