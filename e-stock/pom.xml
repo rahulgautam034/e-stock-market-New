@@ -71,7 +71,7 @@
 			company-service
 		</module>
 		<module>
-			eureka-server-1
+			eureka-server
 		</module>
 		<module>
 			api-gateway
