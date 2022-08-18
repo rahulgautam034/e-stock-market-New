@@ -19,4 +19,7 @@
 			<artifactId>spring-boot-admin-starter-client</artifactId>
 		</dependency>
 	</dependencies>
+	<build>
+		<finalName>eureka-server</finalName>
+	</build>
 </project>

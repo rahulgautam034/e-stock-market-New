@@ -25,5 +25,8 @@
 		</dependency>
 
 	</dependencies>
+	<build>
+		<finalName>api-gateway</finalName>
+	</build>
 
 </project>
