@@ -17,7 +17,7 @@ import java.util.List;
 @Setter
 public class CompanyResponseModel {
 
-    private String id;
+    private Long id;
 
     private String companyName;
 

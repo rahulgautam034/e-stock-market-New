@@ -58,7 +58,7 @@ class CompanyServiceTest {
     void registerCompanyTest1() {
         final CompanyDto companyDto = new CompanyDto("test","tim",10_000_000_000L,"www.test.com","TEST");
         final Company responseModel = new Company();
-        responseModel.setId("Id122");
+        responseModel.setId(1L);
         responseModel.setCompanyName(companyDto.getCompanyName());
         responseModel.setCompanyCeo(companyDto.getCompanyCeo());
         Mockito.when(companyRepository.save(Mockito.any())).thenReturn(responseModel);
@@ -75,7 +75,7 @@ class CompanyServiceTest {
     @Test
     void companyDetailTest1() {
         final Company responseModel = new Company();
-        responseModel.setId("Id122");
+        responseModel.setId(1L);
         responseModel.setCompanyName("test");
         responseModel.setCompanyCeo("tim");
         responseModel.setCompanyCode("Test");
@@ -88,7 +88,7 @@ class CompanyServiceTest {
     @Test
     void deleteCompanyTest() {
         final Company responseModel = new Company();
-        responseModel.setId("Id122");
+        responseModel.setId(1L);
         responseModel.setCompanyName("test");
         responseModel.setCompanyCeo("tim");
         responseModel.setCompanyCode("Test");
@@ -107,7 +107,7 @@ class CompanyServiceTest {
     void getAllTest() {
         final List<Company> responseModelList =  new ArrayList<>();
         final Company responseModel = new Company();
-        responseModel.setId("Id122");
+        responseModel.setId(1L);
         responseModel.setCompanyName("test");
         responseModel.setCompanyCeo("tim");
         responseModel.setCompanyCode("TEST");

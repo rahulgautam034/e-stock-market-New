@@ -37,7 +37,7 @@ class CompanyControllerTest {
     void registerCompanyTest() {
         final CompanyDto companyDto = new CompanyDto("test","tim",100_000_000_000L,"www.test.com","TEST");
         final CompanyResponseModel responseModel = new CompanyResponseModel();
-        responseModel.setId("Id122");
+        responseModel.setId(1L);
         responseModel.setCompanyName(companyDto.getCompanyName());
         responseModel.setCompanyCeo(companyDto.getCompanyCeo());
         Mockito.when(companyService.registerCompany(Mockito.any())).thenReturn(responseModel);
@@ -49,7 +49,7 @@ class CompanyControllerTest {
     @Test
     void companyDetailTest() {
         final CompanyResponseModel responseModel = new CompanyResponseModel();
-        responseModel.setId("Id122");
+        responseModel.setId(2L);
         responseModel.setCompanyName("test");
         responseModel.setCompanyCeo("tim");
         responseModel.setCompanyCode("Test");
@@ -62,7 +62,7 @@ class CompanyControllerTest {
     @Test
     void companyDetailTest1() {
         final CompanyResponseModel responseModel = new CompanyResponseModel();
-        responseModel.setId("Id122");
+        responseModel.setId(2L);
         responseModel.setCompanyName("test");
         responseModel.setCompanyCeo("tim");
         responseModel.setCompanyCode("Test");
@@ -76,7 +76,7 @@ class CompanyControllerTest {
     void getAllTest() {
         final List<CompanyResponseModel> responseModelList =  new ArrayList<>();
         final CompanyResponseModel responseModel = new CompanyResponseModel();
-        responseModel.setId("Id122");
+        responseModel.setId(2L);
         responseModel.setCompanyName("test");
         responseModel.setCompanyCeo("tim");
         responseModel.setCompanyCode("TEST");

@@ -10,7 +10,7 @@ import javax.persistence.Column;
 @Setter
 public class CompanyResponseModel {
 
-    private String id;
+    private Long id;
 
     private String companyName;
 
